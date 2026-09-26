@@ -327,7 +327,7 @@ function AdminRanking() {
                         <RankChange change={e.rankChange} rank={e.rank} previousRank={e.previousRank} />
                       </span>
                     </TableCell>
-                    <TableCell className="font-medium">{e.artistName}</TableCell>
+                    <TableCell className="whitespace-nowrap font-medium">{e.artistName}</TableCell>
                     <TableCell className="text-right tabular-nums">{e.voteScore}</TableCell>
                     <TableCell className="text-right tabular-nums">{e.judgeScore}</TableCell>
                     <TableCell className="text-right tabular-nums">{e.technicalScore}</TableCell>
