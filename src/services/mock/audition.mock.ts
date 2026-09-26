@@ -1,7 +1,9 @@
 import type { AuditionService } from "@/services/contracts";
 import { auditions, entries, rounds, tracks } from "@/mocks/data";
 import { clone, delay, uid } from "./util";
+import { toPublicEntry } from "./mappers";
 
+/** PUBLIC adapter — returns PublicEntry (branch only, no exact unit). */
 export const mockAuditionService: AuditionService = {
   async listAuditions() {
     return delay(clone(auditions));
@@ -19,18 +21,19 @@ export const mockAuditionService: AuditionService = {
     let list = entries;
     if (params?.roundId) list = list.filter((e) => e.roundId === params.roundId);
     if (params?.auditionId) list = list.filter((e) => e.auditionId === params.auditionId);
-    return delay(clone(list));
+    return delay(list.map(toPublicEntry));
   },
   async getEntry(entryId) {
-    return delay(clone(entries.find((e) => e.id === entryId)));
+    const e = entries.find((x) => x.id === entryId);
+    return delay(e ? toPublicEntry(e) : undefined);
   },
   async getTrack(trackId) {
     return delay(clone(tracks.find((t) => t.id === trackId)));
   },
-  async listSameUnitEntries(entryId) {
+  async listSameBranchEntries(entryId) {
     const entry = entries.find((e) => e.id === entryId);
     if (!entry) return delay([]);
-    return delay(clone(entries.filter((e) => e.unit === entry.unit && e.id !== entry.id)));
+    return delay(entries.filter((e) => e.branch === entry.branch && e.id !== entry.id).map(toPublicEntry));
   },
   async submitApplication() {
     return delay({ applicationId: uid("app") }, 500);

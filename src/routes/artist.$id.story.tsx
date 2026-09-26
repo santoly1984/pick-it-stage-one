@@ -21,12 +21,12 @@ function ArtistStory() {
 
   return (
     <div className="min-h-screen">
-      <PageHeader title="스토리" subtitle={entry?.artistName} backTo="/ranking" />
+      <PageHeader title="스토리" {...(entry ? { subtitle: entry.artistName } : {})} backTo="/ranking" />
       <article className="px-5 py-6">
         {entry ? (
           <>
             <h2 className="text-xl font-bold leading-snug">{entry.tagline}</h2>
-            <p className="mt-1 text-xs text-muted-foreground">{entry.unit}</p>
+            <p className="mt-1 text-xs text-muted-foreground">{entry.branch}</p>
             <div className="accent-rule my-5" />
             <p className="whitespace-pre-line text-[15px] leading-8">{entry.story}</p>
           </>

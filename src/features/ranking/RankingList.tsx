@@ -31,7 +31,7 @@ export function RankingList({ entries, className }: { entries: RankingEntry[]; c
           />
           <Link to="/artist/$id" params={{ id: e.entryId }} className="min-w-0">
             <p className="truncate text-sm font-semibold">{e.artistName}</p>
-            <p className="truncate text-xs text-muted-foreground">{e.unit}</p>
+            <p className="truncate text-xs text-muted-foreground">{e.branch}</p>
           </Link>
           <button
             type="button"

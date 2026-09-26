@@ -4,14 +4,12 @@
  */
 import { mockAdminService } from "./mock/admin.mock";
 import { mockAuditionService } from "./mock/audition.mock";
-import { mockAuthService } from "./mock/auth.mock";
 import { mockCommunityService, mockNotificationService } from "./mock/community.mock";
 import { mockJudgingService } from "./mock/judging.mock";
 import { mockLyricsService } from "./mock/lyrics.mock";
 import { mockRankingService } from "./mock/ranking.mock";
 import { mockVotingService } from "./mock/voting.mock";
 
-export const authService = mockAuthService;
 export const auditionService = mockAuditionService;
 export const rankingService = mockRankingService;
 export const votingService = mockVotingService;

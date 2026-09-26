@@ -4,7 +4,7 @@ import { usePlayer } from "./PlayerProvider";
 import { cn } from "@/lib/utils";
 
 export function MiniPlayer() {
-  const { current, isPlaying, toggle, next, currentTime, duration } = usePlayer();
+  const { current, isPlaying, toggle, next, currentTime, duration, error, suspended } = usePlayer();
   const { pathname } = useLocation();
 
   if (!current || pathname === "/player") return null;
@@ -31,7 +31,9 @@ export function MiniPlayer() {
           />
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold">{current.title}</p>
-            <p className="truncate text-xs text-muted-foreground">{current.artistName}</p>
+            <p className={cn("truncate text-xs", error ? "text-destructive" : "text-muted-foreground")}>
+              {error ?? (suspended ? "영상 재생 중 · 일시정지됨" : current.artistName)}
+            </p>
           </div>
         </Link>
         <button type="button" onClick={toggle} aria-label={isPlaying ? "일시정지" : "재생"} className="p-2">

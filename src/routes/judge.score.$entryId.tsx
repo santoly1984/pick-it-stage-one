@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Play } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { auditionService, DEFAULT_AUDITION_ID, DEFAULT_JUDGE_ID, judgingService } from "@/services";
+import { DEFAULT_JUDGE_ID, DEFAULT_ROUND_ID, judgingService } from "@/services";
 import { usePlayEntry } from "@/hooks/usePlayEntry";
 import { InterviewVideo } from "@/features/artist/InterviewVideo";
 
@@ -28,10 +28,14 @@ function JudgeScorePage() {
   const navigate = useNavigate();
   const play = usePlayEntry();
 
-  const { data: entry } = useQuery({ queryKey: ["entry", entryId], queryFn: () => auditionService.getEntry(entryId) });
-  const { data: rule } = useQuery({
-    queryKey: ["evaluation-rule", DEFAULT_AUDITION_ID],
-    queryFn: () => judgingService.getEvaluationRule(DEFAULT_AUDITION_ID),
+  const qc = useQueryClient();
+  const { data: entry } = useQuery({
+    queryKey: ["judge", "entry", entryId],
+    queryFn: () => judgingService.getEntry(entryId),
+  });
+  const { data: criteria } = useQuery({
+    queryKey: ["judge", "criteria", entry?.roundId ?? DEFAULT_ROUND_ID],
+    queryFn: () => judgingService.getCriteria(entry?.roundId ?? DEFAULT_ROUND_ID),
   });
   const { data: existing } = useQuery({
     queryKey: ["judge-score", DEFAULT_JUDGE_ID, entryId],
@@ -58,7 +62,7 @@ function JudgeScorePage() {
   const nextEntryId = useMemo(() => {
     const list = siblings.data ?? [];
     const i = list.findIndex((e) => e.id === entryId);
-    return i >= 0 && i < list.length - 1 ? list[i + 1].id : null;
+    return i >= 0 ? (list[i + 1]?.id ?? null) : null;
   }, [siblings.data, entryId]);
 
   const save = async (goNext: boolean) => {
@@ -73,12 +77,13 @@ function JudgeScorePage() {
       status: "submitted",
     });
     setSaving(false);
+    void qc.invalidateQueries({ queryKey: ["judge"] });
     toast.success("평가를 저장했습니다");
     if (goNext && nextEntryId) navigate({ to: "/judge/score/$entryId", params: { entryId: nextEntryId } });
     else navigate({ to: "/judge/round/$id", params: { id: entry.roundId } });
   };
 
-  if (!entry || !rule) {
+  if (!entry || !criteria) {
     return (
       <div className="min-h-screen">
         <PageHeader title="평가" backTo="/judge" />
@@ -87,12 +92,12 @@ function JudgeScorePage() {
     );
   }
 
-  const total = rule.criteria.reduce((sum, c) => sum + (scores[c.id] ?? 0), 0);
-  const maxTotal = rule.criteria.reduce((sum, c) => sum + c.max, 0);
+  const total = criteria.reduce((sum, c) => sum + (scores[c.id] ?? 0), 0);
+  const maxTotal = criteria.reduce((sum, c) => sum + c.max, 0);
 
   return (
     <div className="min-h-screen">
-      <PageHeader title={entry.artistName} subtitle={entry.unit} backTo="/judge" />
+      <PageHeader title={entry.artistName} subtitle={entry.branch} backTo="/judge" />
 
       <div className="space-y-6 px-5 py-5">
         <div className="panel grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 p-3">
@@ -109,7 +114,7 @@ function JudgeScorePage() {
         {entry.interviewVideoUrl && <InterviewVideo src={entry.interviewVideoUrl} poster={entry.coverUrl} />}
 
         <div className="space-y-5">
-          {rule.criteria.map((c) => {
+          {criteria.map((c) => {
             const value = scores[c.id] ?? 0;
             return (
               <div key={c.id}>
@@ -127,7 +132,7 @@ function JudgeScorePage() {
                   value={[value]}
                   max={c.max}
                   step={1}
-                  onValueChange={([v]) => setScores((s) => ({ ...s, [c.id]: v }))}
+                  onValueChange={([v]) => setScores((s) => ({ ...s, [c.id]: v ?? 0 }))}
                   aria-label={c.label}
                 />
               </div>

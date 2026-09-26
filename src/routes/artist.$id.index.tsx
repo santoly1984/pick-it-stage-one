@@ -8,6 +8,8 @@ import { useVoteSheet } from "@/features/voting/VoteSheetProvider";
 import { InterviewVideo } from "@/features/artist/InterviewVideo";
 import { CommentThread } from "@/features/community/CommentThread";
 import { Button } from "@/components/ui/button";
+import { useLiveRankOf } from "@/features/ranking/queries";
+import { RankChange } from "@/features/ranking/RankChange";
 
 export const Route = createFileRoute("/artist/$id/")({
   head: () => ({
@@ -25,11 +27,12 @@ function ArtistDetail() {
   const { id } = Route.useParams();
   const play = usePlayEntry();
   const vote = useVoteSheet();
+  const liveRank = useLiveRankOf(id);
 
   const { data: entry } = useQuery({ queryKey: ["entry", id], queryFn: () => auditionService.getEntry(id) });
-  const { data: sameUnit = [] } = useQuery({
-    queryKey: ["same-unit", id],
-    queryFn: () => auditionService.listSameUnitEntries(id),
+  const { data: sameBranch = [] } = useQuery({
+    queryKey: ["same-branch", id],
+    queryFn: () => auditionService.listSameBranchEntries(id),
   });
 
   if (!entry) {
@@ -43,7 +46,7 @@ function ArtistDetail() {
 
   return (
     <div className="min-h-screen">
-      <PageHeader title={entry.artistName} subtitle={entry.unit} backTo="/ranking" />
+      <PageHeader title={entry.artistName} subtitle={entry.branch} backTo="/ranking" />
 
       <section className="px-5 py-4">
         <img
@@ -54,7 +57,13 @@ function ArtistDetail() {
           height={816}
           className="aspect-square w-full rounded-2xl object-cover"
         />
-        <h2 className="mt-4 text-xl font-bold">{entry.tagline}</h2>
+        {liveRank && (
+          <p className="mt-4 inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs">
+            실시간 {liveRank.rank}위
+            <RankChange change={liveRank.rankChange} rank={liveRank.rank} previousRank={liveRank.previousRank} />
+          </p>
+        )}
+        <h2 className="mt-3 text-xl font-bold">{entry.tagline}</h2>
         <div className="accent-rule mt-3" />
 
         <div className="mt-5 flex gap-3">
@@ -94,11 +103,11 @@ function ArtistDetail() {
         </section>
       )}
 
-      {sameUnit.length > 0 && (
+      {sameBranch.length > 0 && (
         <section className="pb-6">
-          <h3 className="px-5 text-sm font-bold">같은 부대의 목소리</h3>
+          <h3 className="px-5 text-sm font-bold">같은 군의 목소리</h3>
           <div className="mt-3 flex gap-3 overflow-x-auto px-5 pb-2">
-            {sameUnit.map((e) => (
+            {sameBranch.map((e) => (
               <Link key={e.id} to="/artist/$id" params={{ id: e.id }} className="w-32 shrink-0">
                 <img
                   src={e.coverUrl}

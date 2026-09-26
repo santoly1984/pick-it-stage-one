@@ -50,6 +50,10 @@ export interface Round {
   votingClosesAt: string;
 }
 
+/** Public-safe affiliation. Exact unit (부대) names/locations are internal only. */
+export type MilitaryBranch = "육군" | "해군" | "공군" | "해병대" | "국직";
+
+/** INTERNAL entry (Admin only). Contains exact unit. */
 export interface Entry {
   id: string;
   auditionId: string;
@@ -57,12 +61,29 @@ export interface Entry {
   challengerId: string;
   artistName: string;
   unit: string;
+  branch: MilitaryBranch;
   trackId: string;
   interviewVideoUrl?: string;
   coverUrl: string;
   story: string;
   tagline: string;
   submittedAt: string;
+}
+
+/** PUBLIC entry DTO — no exact unit, no challenger account id. */
+export interface PublicEntry {
+  id: string;
+  auditionId: string;
+  roundId: string;
+  artistName: string;
+  branch: MilitaryBranch;
+  trackId: string;
+  interviewVideoUrl?: string;
+  coverUrl: string;
+  story: string;
+  tagline: string;
+  /** true when the signed-in user is this entry's challenger (for reply badge) */
+  isMine: boolean;
 }
 
 export interface Track {
@@ -135,10 +156,22 @@ export interface JudgeScore {
   updatedAt: string;
 }
 
-/** Admin-configurable weighting between vote / judge / technical. Admin-only. */
+export interface EvaluationWeights {
+  voteWeight: number; // 0..1
+  judgeWeight: number;
+  technicalWeight: number;
+}
+
+/**
+ * Per-round weighting. Admin-only.
+ * Values shipped in mocks are EXAMPLES — operating policy is not decided.
+ */
 export interface EvaluationRule {
   id: string;
   auditionId: string;
+  roundId: string;
+  /** "example" = placeholder mock values; "draft" = saved by admin, not yet approved. */
+  status: "example" | "draft" | "approved";
   voteWeight: number; // 0..1
   judgeWeight: number;
   technicalWeight: number;
@@ -154,7 +187,7 @@ export type RankChange = "up" | "down" | "flat" | "new";
 export interface RankingEntry {
   entryId: string;
   artistName: string;
-  unit: string;
+  branch: MilitaryBranch;
   coverUrl: string;
   rank: number;
   previousRank: number | null;
@@ -170,7 +203,7 @@ export interface AdminRankingEntry extends RankingEntry {
   technicalScore: number;
   convertedScore: number;
   totalScore: number;
-  weightsApplied: Pick<EvaluationRule, "voteWeight" | "judgeWeight" | "technicalWeight">;
+  weightsApplied: EvaluationWeights;
   changeReason: string;
 }
 
@@ -181,6 +214,8 @@ export interface RankingSnapshot<T = RankingEntry> {
   auditionId: string;
   roundId: string;
   kind: RankingKind;
+  /** false when the snapshot is not publishable (e.g. final before judging completes) */
+  published: boolean;
   entries: T[];
   updatedAt: string;
 }

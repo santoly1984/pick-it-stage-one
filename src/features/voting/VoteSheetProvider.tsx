@@ -10,7 +10,9 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { votingService } from "@/services";
-import { currentUser } from "@/mocks/data";
+import { useQueryClient } from "@tanstack/react-query";
+import { getSession } from "@/stores/session";
+import { rankingKeys } from "@/features/ranking/queries";
 import type { TicketBalance, TicketType } from "@/types";
 import { useEffect } from "react";
 
@@ -36,6 +38,7 @@ export function VoteSheetProvider({ children }: { children: ReactNode }) {
   const [balance, setBalance] = useState<TicketBalance | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const qc = useQueryClient();
 
   const open = useCallback((next: VoteTarget) => {
     setTarget(next);
@@ -47,7 +50,7 @@ export function VoteSheetProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!target) return;
-    void votingService.getBalance(currentUser.id).then(setBalance);
+    void votingService.getBalance(getSession().userId).then(setBalance);
   }, [target]);
 
   const max = balance ? balance[ticketType] : 0;
@@ -58,13 +61,16 @@ export function VoteSheetProvider({ children }: { children: ReactNode }) {
     setError(null);
     try {
       await votingService.castVote({
-        userId: currentUser.id,
+        userId: getSession().userId,
         entryId: target.entryId,
         roundId: target.roundId,
         ticketType,
         quantity,
       });
-      setBalance(await votingService.getBalance(currentUser.id));
+      setBalance(await votingService.getBalance(getSession().userId));
+      // Refresh every public ranking view (Home TOP, Ranking, Artist, Player) and balances.
+      void qc.invalidateQueries({ queryKey: rankingKeys.publicAll });
+      void qc.invalidateQueries({ queryKey: ["balance"] });
       setStep("done");
     } catch (e) {
       setError(e instanceof Error ? e.message : "투표에 실패했습니다.");

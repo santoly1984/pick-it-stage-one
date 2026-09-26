@@ -15,6 +15,7 @@ import type {
   EvaluationRule,
   JudgeScore,
   LyricsDocument,
+  MilitaryBranch,
   Notification,
   Round,
   TicketBalance,
@@ -32,13 +33,13 @@ const AUDIO = [
   "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
 ];
 
-const UNITS = [
-  "육군 제3보병사단",
-  "해군 제1함대",
-  "공군 제11전투비행단",
-  "해병대 제2사단",
-  "육군 수도기계화사단",
-  "국군지원사령부",
+const UNITS: { unit: string; branch: MilitaryBranch }[] = [
+  { unit: "육군 제3보병사단", branch: "육군" },
+  { unit: "해군 제1함대", branch: "해군" },
+  { unit: "공군 제11전투비행단", branch: "공군" },
+  { unit: "해병대 제2사단", branch: "해병대" },
+  { unit: "육군 수도기계화사단", branch: "육군" },
+  { unit: "국군지원사령부", branch: "국직" },
 ];
 
 const NAMES = [
@@ -84,10 +85,10 @@ export const users: User[] = [
 
 export const tracks: Track[] = NAMES.map((name, i) => ({
   id: `t_${i + 1}`,
-  title: ["첫 휴가", "야간 근무", "편지", "다시 봄", "복무일지", "네 이름", "새벽 5시", "돌아갈 자리", "먼지", "사이렌", "수요일", "전역일"][i],
+  title: ["첫 휴가", "야간 근무", "편지", "다시 봄", "복무일지", "네 이름", "새벽 5시", "돌아갈 자리", "먼지", "사이렌", "수요일", "전역일"][i]!,
   artistName: name,
-  audioUrl: AUDIO[i % AUDIO.length],
-  coverUrl: COVERS[i % COVERS.length],
+  audioUrl: AUDIO[i % AUDIO.length]!,
+  coverUrl: COVERS[i % COVERS.length]!,
   durationSec: 214 + (i % 5) * 17,
   lyricsStatus: i === 0 ? "published" : i === 1 ? "review" : "draft",
 }));
@@ -98,7 +99,7 @@ export const auditions: Audition[] = [
     title: "PICK IT 2026 시즌 1",
     subtitle: "군 장병 음악 오디션",
     status: "voting",
-    coverUrl: COVERS[0],
+    coverUrl: COVERS[0]!,
     startsAt: "2026-08-01T00:00:00.000Z",
     endsAt: "2026-11-30T00:00:00.000Z",
     roundIds: ["r_1", "r_2"],
@@ -134,11 +135,12 @@ export const entries: Entry[] = NAMES.map((name, i) => ({
   roundId: i < 8 ? "r_2" : "r_1",
   challengerId: i === 0 ? "u_me" : `u_c${i + 1}`,
   artistName: name,
-  unit: UNITS[i % UNITS.length],
+  unit: UNITS[i % UNITS.length]!.unit,
+  branch: UNITS[i % UNITS.length]!.branch,
   trackId: `t_${i + 1}`,
   interviewVideoUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-  coverUrl: COVERS[i % COVERS.length],
-  tagline: TAGLINES[i % TAGLINES.length],
+  coverUrl: COVERS[i % COVERS.length]!,
+  tagline: TAGLINES[i % TAGLINES.length]!,
   story:
     "입대 전에는 무대에 서는 일이 당연했습니다. 훈련소에서 3주가 지났을 때, 노래가 없는 하루가 얼마나 긴지 알게 됐어요.\n\n생활관 소등 후에 가사를 적었습니다. 처음에는 그냥 버티려고 쓴 글이었는데, 어느 순간 부대 동기들이 먼저 흥얼거리기 시작하더라고요. 이 곡은 그렇게 만들어졌습니다.\n\n지금 이 노래를 듣는 분들이, 각자의 자리에서 버티는 시간을 조금 덜 외롭게 보내면 좋겠습니다.",
   submittedAt: "2026-09-01T12:00:00.000Z",
@@ -190,9 +192,15 @@ export const ticketBalance: TicketBalance = {
 
 export const votes: Vote[] = [];
 
-export const evaluationRule: EvaluationRule = {
-  id: "rule_1",
+/**
+ * EXAMPLE weights only (status: "example"). Operating policy is NOT decided;
+ * admins may simulate and save drafts per round.
+ */
+export const evaluationRules: EvaluationRule[] = ["r_1", "r_2"].map((roundId) => ({
+  id: `rule_${roundId}`,
   auditionId: "a_1",
+  roundId,
+  status: "example",
   voteWeight: 0.4,
   judgeWeight: 0.45,
   technicalWeight: 0.15,
@@ -203,7 +211,9 @@ export const evaluationRule: EvaluationRule = {
     { id: "story", label: "스토리 적합성", max: 10, description: "PICK IT 취지 부합" },
   ],
   updatedAt: "2026-09-10T00:00:00.000Z",
-};
+}));
+
+export const criteria = evaluationRules[0]!.criteria;
 
 function seededScore(seed: number, max: number) {
   return Math.round(((Math.sin(seed) + 1) / 2) * max * 0.35 + max * 0.6);
@@ -216,10 +226,10 @@ export const judgeScores: JudgeScore[] = entries.flatMap((entry, ei) =>
     entryId: entry.id,
     judgeId,
     scores: Object.fromEntries(
-      evaluationRule.criteria.map((c, ci) => [c.id, seededScore(ei * 7 + ji * 3 + ci, c.max)]),
+      criteria.map((c, ci) => [c.id, seededScore(ei * 7 + ji * 3 + ci, c.max)]),
     ),
-    comment: ji === 0 ? "가사 전달력이 좋고, 후반부 고음 처리에서 안정감이 있습니다." : undefined,
-    status: (ei + ji) % 5 === 0 ? "draft" : "submitted",
+    ...(ji === 0 ? { comment: "가사 전달력이 좋고, 후반부 고음 처리에서 안정감이 있습니다." } : {}),
+    status: ((ei + ji) % 5 === 0 ? "draft" : "submitted") as JudgeScore["status"],
     updatedAt: "2026-09-22T10:00:00.000Z",
   })),
 );
@@ -283,7 +293,7 @@ export const auditLogs: AuditLog[] = [
     actorId: "u_admin",
     actorName: "운영자",
     action: "evaluation_rule.update",
-    target: "rule_1",
+    target: "rule_r_2",
     meta: { voteWeight: 0.4, judgeWeight: 0.45 },
     createdAt: "2026-09-10T00:12:00.000Z",
   },

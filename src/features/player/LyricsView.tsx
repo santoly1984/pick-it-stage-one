@@ -17,7 +17,7 @@ export function LyricsView({ lines, currentTime, onSeek, className }: Props) {
   const activeIndex = useMemo(() => {
     let idx = -1;
     for (let i = 0; i < lines.length; i += 1) {
-      if (currentTime >= lines[i].startSec) idx = i;
+      if (currentTime >= (lines[i]?.startSec ?? Infinity)) idx = i;
       else break;
     }
     return idx;

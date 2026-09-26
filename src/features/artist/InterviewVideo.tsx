@@ -1,13 +1,29 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { usePlayer } from "@/features/player/PlayerProvider";
 
 /**
- * Interview video. Playing it pauses the global audio; when the video ends or
- * pauses, audio playback is restored if it was running before.
+ * Interview video with audio focus:
+ *  - play  -> global audio pauses (focus held by video)
+ *  - pause -> focus released, audio stays paused (user chose to stop)
+ *  - ended -> focus released and audio resumes if it was playing before
+ *  - global audio play while video plays -> video pauses (single focus)
  */
 export function InterviewVideo({ src, poster }: { src: string; poster?: string }) {
-  const { suspendForVideo, resumeAfterVideo } = usePlayer();
+  const { suspendForVideo, releaseVideoFocus, isPlaying } = usePlayer();
   const ref = useRef<HTMLVideoElement>(null);
+  const ownsFocus = useRef(false);
+
+  useEffect(() => {
+    const v = ref.current;
+    if (isPlaying && v && !v.paused) v.pause();
+  }, [isPlaying]);
+
+  useEffect(
+    () => () => {
+      if (ownsFocus.current) releaseVideoFocus(false);
+    },
+    [releaseVideoFocus],
+  );
 
   return (
     <video
@@ -18,9 +34,19 @@ export function InterviewVideo({ src, poster }: { src: string; poster?: string }
       playsInline
       preload="none"
       className="aspect-video w-full rounded-xl border border-border bg-surface object-cover"
-      onPlay={suspendForVideo}
-      onPause={resumeAfterVideo}
-      onEnded={resumeAfterVideo}
+      onPlay={() => {
+        ownsFocus.current = true;
+        suspendForVideo();
+      }}
+      onPause={(e) => {
+        if (e.currentTarget.ended) return;
+        ownsFocus.current = false;
+        releaseVideoFocus(false);
+      }}
+      onEnded={() => {
+        ownsFocus.current = false;
+        releaseVideoFocus(true);
+      }}
     />
   );
 }

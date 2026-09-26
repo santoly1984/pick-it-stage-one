@@ -6,6 +6,7 @@
 import type { LyricsService } from "@/services/contracts";
 import { lyricsDocs, tracks } from "@/mocks/data";
 import type { LyricsDocument } from "@/types";
+import { assertRole } from "@/stores/session";
 import { clone, delay, nowIso } from "./util";
 
 function ensureDoc(trackId: string): LyricsDocument {
@@ -27,6 +28,7 @@ export const mockLyricsService: LyricsService = {
     return delay(clone(ensureDoc(trackId)));
   },
   async saveCanonicalText(trackId, text) {
+    assertRole("admin");
     const doc = ensureDoc(trackId);
     doc.canonicalText = text;
     doc.status = text.trim() ? "draft" : "empty";
@@ -35,6 +37,7 @@ export const mockLyricsService: LyricsService = {
     return delay(clone(doc), 250);
   },
   async requestAutoSync(trackId) {
+    assertRole("admin");
     const doc = ensureDoc(trackId);
     doc.status = "processing";
     syncTrackStatus(doc);
@@ -57,12 +60,14 @@ export const mockLyricsService: LyricsService = {
     return delay(clone(doc), 1400);
   },
   async updateLines(trackId, lines) {
+    assertRole("admin");
     const doc = ensureDoc(trackId);
     doc.lines = lines;
     doc.updatedAt = nowIso();
     return delay(clone(doc), 200);
   },
   async publish(trackId) {
+    assertRole("admin");
     const doc = ensureDoc(trackId);
     doc.status = "published";
     doc.updatedAt = nowIso();

@@ -4,9 +4,12 @@
  * Every screen talks to these interfaces only. Swapping the mock adapters in
  * `src/services/mock/*` for HTTP clients must not require UI changes.
  *
- * Scoring / ranking is deliberately NOT computed in the frontend:
- * `RankingService` returns already-ranked data, and the public method can only
- * return score-free `RankingEntry` objects.
+ * Boundaries:
+ *  - Public services (Audition, Ranking.getPublicRanking, Community) return
+ *    PUBLIC DTOs only: branch-level affiliation, no scores.
+ *  - Judging / Admin services are privileged. Mock adapters check the mock
+ *    session role; the real backend MUST enforce roles server-side.
+ *  - Scoring / ranking is never computed in the frontend.
  */
 import type {
   AdminRankingEntry,
@@ -16,36 +19,32 @@ import type {
   Entry,
   EntryJudgingProgress,
   EvaluationRule,
+  EvaluationWeights,
   JudgeScore,
   JudgingProgress,
   LyricLine,
   LyricsDocument,
   Notification,
+  PublicEntry,
   RankingKind,
   RankingSnapshot,
   Round,
   TicketBalance,
   TicketType,
   Track,
-  User,
   Vote,
 } from "@/types";
-
-export interface AuthService {
-  getCurrentUser(): Promise<User>;
-  signInWithMock(role: "fan" | "challenger" | "judge" | "admin"): Promise<User>;
-  signOut(): Promise<void>;
-}
 
 export interface AuditionService {
   listAuditions(): Promise<Audition[]>;
   getAudition(id: string): Promise<Audition | undefined>;
   listRounds(auditionId: string): Promise<Round[]>;
   getRound(roundId: string): Promise<Round | undefined>;
-  listEntries(params?: { roundId?: string; auditionId?: string }): Promise<Entry[]>;
-  getEntry(entryId: string): Promise<Entry | undefined>;
+  listEntries(params?: { roundId?: string; auditionId?: string }): Promise<PublicEntry[]>;
+  getEntry(entryId: string): Promise<PublicEntry | undefined>;
   getTrack(trackId: string): Promise<Track | undefined>;
-  listSameUnitEntries(entryId: string): Promise<Entry[]>;
+  /** Recommendation at branch level (군종) — never exact unit. */
+  listSameBranchEntries(entryId: string): Promise<PublicEntry[]>;
   submitApplication(input: ApplicationInput): Promise<{ applicationId: string }>;
 }
 
@@ -59,17 +58,17 @@ export interface ApplicationInput {
 }
 
 export interface RankingService {
-  /** PUBLIC — score-free by contract. */
-  getPublicRanking(params: {
-    roundId: string;
-    kind: RankingKind;
-    limit?: number;
-  }): Promise<RankingSnapshot>;
-  /** ADMIN-ONLY — includes breakdown. Never call from public screens. */
+  /**
+   * PUBLIC — score-free by contract.
+   * `final` returns `published: false` and no entries until judging completes
+   * and the result is finalized.
+   */
+  getPublicRanking(params: { roundId: string; kind: RankingKind; limit?: number }): Promise<RankingSnapshot>;
+  /** ADMIN-ONLY — includes breakdown. */
   getAdminRanking(params: {
     roundId: string;
     kind: RankingKind;
-    weights?: Pick<EvaluationRule, "voteWeight" | "judgeWeight" | "technicalWeight">;
+    weights?: EvaluationWeights;
   }): Promise<RankingSnapshot<AdminRankingEntry>>;
   finalizeRanking(roundId: string): Promise<{ finalizedAt: string }>;
 }
@@ -86,21 +85,36 @@ export interface VotingService {
   listMyVotes(userId: string): Promise<Vote[]>;
 }
 
+/** JUDGE-ONLY. Judges receive public entry DTOs (least privilege). */
 export interface JudgingService {
   listAssignedRounds(judgeId: string): Promise<Round[]>;
-  listAssignedEntries(judgeId: string, roundId: string): Promise<Entry[]>;
-  getEvaluationRule(auditionId: string): Promise<EvaluationRule>;
+  listAssignedEntries(judgeId: string, roundId: string): Promise<PublicEntry[]>;
+  getEntry(entryId: string): Promise<PublicEntry | undefined>;
+  getCriteria(roundId: string): Promise<EvaluationRule["criteria"]>;
   getMyScore(judgeId: string, entryId: string): Promise<JudgeScore | undefined>;
+  listMyScores(judgeId: string, roundId: string): Promise<JudgeScore[]>;
   saveScore(input: Omit<JudgeScore, "id" | "updatedAt">): Promise<JudgeScore>;
 }
 
+export interface RuleSimulationRow {
+  entryId: string;
+  artistName: string;
+  currentRank: number;
+  simulatedRank: number;
+}
+
+/** ADMIN-ONLY. */
 export interface AdminService {
+  listEntries(auditionId: string): Promise<Entry[]>;
   listJudgingProgress(roundId: string): Promise<JudgingProgress[]>;
   listEntryJudgingProgress(roundId: string): Promise<EntryJudgingProgress[]>;
   listJudgeScores(entryId: string): Promise<JudgeScore[]>;
-  getEvaluationRule(auditionId: string): Promise<EvaluationRule>;
-  updateEvaluationRule(rule: EvaluationRule): Promise<EvaluationRule>;
-  listUsers(): Promise<User[]>;
+  getEvaluationRule(roundId: string): Promise<EvaluationRule>;
+  /** Dry run — never persists. */
+  simulateEvaluationRule(roundId: string, weights: EvaluationWeights): Promise<RuleSimulationRow[]>;
+  /** Saves as `draft` only. Approval of operating policy is out of scope. */
+  saveEvaluationRuleDraft(roundId: string, weights: EvaluationWeights): Promise<EvaluationRule>;
+  listUsers(): Promise<import("@/types").User[]>;
   listAuditLogs(): Promise<AuditLog[]>;
   listVoteStats(roundId: string): Promise<{ entryId: string; artistName: string; free: number; standard: number; total: number }[]>;
 }

@@ -1,6 +1,7 @@
 import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 import { ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { RoleGate } from "@/components/auth/RoleGate";
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
@@ -23,6 +24,14 @@ const TABS = [
  * Real permission checks belong on the server in a later phase.
  */
 function AdminLayout() {
+  return (
+    <RoleGate role="admin">
+      <AdminShell />
+    </RoleGate>
+  );
+}
+
+function AdminShell() {
   const { pathname } = useLocation();
 
   return (
@@ -34,7 +43,7 @@ function AdminLayout() {
         </div>
         <nav className="flex gap-1 overflow-x-auto px-4 pb-2">
           {TABS.map((t) => {
-            const active = t.exact ? pathname === t.to : pathname.startsWith(t.to);
+            const active = "exact" in t ? pathname === t.to : pathname.startsWith(t.to);
             return (
               <Link
                 key={t.to}
