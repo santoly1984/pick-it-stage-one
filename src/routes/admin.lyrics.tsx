@@ -148,15 +148,6 @@ function AdminLyrics() {
             >
               수정 저장
             </Button>
-          </div>
-          <p className="mt-2 text-[11px] text-muted-foreground">
-            {dirtyLines
-              ? "저장하지 않은 수정이 있습니다. 저장 후 공개할 수 있습니다."
-              : doc.status === "published"
-                ? "공개된 가사입니다. 수정 저장 시 다시 검수 단계로 돌아갑니다."
-                : "타임스탬프는 앞 줄보다 커야 합니다."}
-          </p>
-          <div className="hidden">
             <Button
               size="sm"
               disabled={busy || doc.status !== "review" || dirtyLines}
@@ -165,6 +156,13 @@ function AdminLyrics() {
               검수 완료 · 공개
             </Button>
           </div>
+          <p className="mt-2 text-[11px] text-muted-foreground">
+            {dirtyLines
+              ? "저장하지 않은 수정이 있습니다. 저장 후 공개할 수 있습니다."
+              : doc.status === "published"
+                ? "공개된 가사입니다. 수정 저장 시 다시 검수 단계로 돌아갑니다."
+                : "타임스탬프는 앞 줄보다 커야 합니다."}
+          </p>
         </AdminSection>
       )}
     </div>

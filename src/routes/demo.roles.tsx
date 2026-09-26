@@ -18,10 +18,10 @@ export const Route = createFileRoute("/demo/roles")({
 });
 
 const OPTIONS = [
-  { key: "fan", label: "팬", to: "/home" },
-  { key: "challenger", label: "팬 + 참가자", to: "/home" },
-  { key: "judge", label: "심사위원 (데모 계정)", to: "/judge" },
-  { key: "admin", label: "운영자 (데모 계정)", to: "/admin" },
+  { key: "fan", label: "팬", to: "/home", flow: "듣기 → 투표 → 랭킹 확인 · /judge·/admin 접근 차단" },
+  { key: "challenger", label: "팬 + 참가자", to: "/home", flow: "팬 기능 + 지원서(/apply) · /judge·/admin 접근 차단" },
+  { key: "judge", label: "심사위원 (데모 계정)", to: "/judge", flow: "라운드 → 참가자 → 평가 저장 → 다음 · /admin 접근 차단" },
+  { key: "admin", label: "운영자 (데모 계정)", to: "/admin", flow: "진행률 → 규칙 시뮬레이션·적용 → 검토·확정·공개 · 가사 싱크" },
 ] as const;
 
 /**
@@ -58,6 +58,7 @@ function DemoRoles() {
             >
               {o.label}
               <span className="block text-xs font-normal text-muted-foreground">{acc.roles.join(" + ")}</span>
+              <span className="mt-1 block text-xs font-normal text-muted-foreground">{o.flow}</span>
             </button>
           );
         })}
