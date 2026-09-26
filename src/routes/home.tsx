@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronRight, Ticket } from "lucide-react";
+import { ChevronDown, ChevronRight, Ticket } from "lucide-react";
 import { auditionService, DEFAULT_ROUND_ID, votingService } from "@/services";
 import { publicRankingQuery } from "@/features/ranking/queries";
 import { useSession } from "@/stores/session";
@@ -33,6 +34,7 @@ function Home() {
     queryFn: () => votingService.getBalance(session.userId),
   });
 
+  const [expanded, setExpanded] = useState(false);
   const queue = entries.map((e) => e.id);
   const tickets = balance ? balance.free + balance.standard : null;
 
@@ -73,14 +75,9 @@ function Home() {
       </section>
 
       <section className="px-5 pt-4">
-        <p className="text-xs text-muted-foreground">곧 열릴 프로그램</p>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {["일반인 오디션", "대학생 오디션", "시니어 오디션"].map((p) => (
-            <span key={p} className="rounded-full bg-surface px-3 py-1.5 text-xs text-muted-foreground">
-              {p}
-            </span>
-          ))}
-        </div>
+        <p className="text-xs leading-relaxed text-muted-foreground">
+          PICK IT은 여러 음악 오디션을 담을 수 있도록 설계되었습니다. 이후 프로그램은 확정되지 않았습니다.
+        </p>
       </section>
 
       <section className="px-5 pt-10">
@@ -90,11 +87,24 @@ function Home() {
             {snapshot && <UpdatedAt iso={snapshot.updatedAt} />}
           </div>
           <Link to="/ranking" className="flex shrink-0 items-center text-sm text-muted-foreground">
-            전체 <ChevronRight className="size-4" />
+            TOP 100 <ChevronRight className="size-4" />
           </Link>
         </div>
         {snapshot ? (
-          <RankingList entries={snapshot.entries} className="mt-3" />
+          <>
+            <RankingList entries={snapshot.entries.slice(0, expanded ? 10 : 5)} className="mt-3" />
+            {snapshot.entries.length > 5 && (
+              <button
+                type="button"
+                onClick={() => setExpanded((v) => !v)}
+                aria-expanded={expanded}
+                className="mt-2 flex h-11 w-full items-center justify-center gap-1 rounded-xl bg-surface text-sm font-medium text-muted-foreground"
+              >
+                {expanded ? "접기" : "6~10위 펼치기"}
+                <ChevronDown className={`size-4 transition-transform ${expanded ? "rotate-180" : ""}`} />
+              </button>
+            )}
+          </>
         ) : (
           <p className="py-6 text-sm text-muted-foreground">불러오는 중...</p>
         )}
@@ -112,8 +122,8 @@ function Home() {
       <section className="px-5 pt-8">
         <Link to="/apply" className="panel flex items-center justify-between p-5">
           <div className="min-w-0">
-            <p className="text-base font-semibold">내 무대로 지원하기</p>
-            <p className="mt-0.5 text-sm text-muted-foreground">시즌 1 · 2차 라운드 접수 중</p>
+            <p className="text-base font-semibold">오디션 지원 안내</p>
+            <p className="mt-0.5 text-sm text-muted-foreground">현재 시즌 1 · 2차 라운드는 투표 진행 중입니다</p>
           </div>
           <ChevronRight className="size-5 shrink-0 text-muted-foreground" />
         </Link>

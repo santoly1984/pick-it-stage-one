@@ -46,7 +46,7 @@ function Apply() {
 
   return (
     <div className="min-h-screen">
-      <PageHeader title="오디션 지원" subtitle="시즌 1 · 군 장병 음악 오디션 · 2차 라운드" backTo="/home" />
+      <PageHeader title="오디션 지원" subtitle="시즌 1 · 군 장병 음악 오디션 · 지원서 예시(mock)" backTo="/home" />
       <form onSubmit={submit} className="space-y-5 px-5 py-6">
         <div className="panel p-4 text-xs leading-relaxed text-muted-foreground">
           지원 후 부대 지휘관 확인 절차가 진행됩니다. 이번 단계에서는 파일 업로드와 심사 연동이 mock으로 동작합니다.
