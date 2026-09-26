@@ -17,9 +17,12 @@ import { Route as PlayerRouteImport } from './routes/player'
 import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as SigninRouteImport } from './routes/signin'
 import { Route as WelcomeRouteImport } from './routes/welcome'
+import { Route as JudgeIndexRouteImport } from './routes/judge.index'
 import { Route as OnboardingRoleRouteImport } from './routes/onboarding.role'
 import { Route as ArtistIdIndexRouteImport } from './routes/artist.$id.index'
 import { Route as ArtistIdStoryRouteImport } from './routes/artist.$id.story'
+import { Route as JudgeRoundIdRouteImport } from './routes/judge.round.$id'
+import { Route as JudgeScoreEntryIdRouteImport } from './routes/judge.score.$entryId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -61,6 +64,11 @@ const WelcomeRoute = WelcomeRouteImport.update({
   path: '/welcome',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JudgeIndexRoute = JudgeIndexRouteImport.update({
+  id: '/judge/',
+  path: '/judge/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OnboardingRoleRoute = OnboardingRoleRouteImport.update({
   id: '/onboarding/role',
   path: '/onboarding/role',
@@ -76,6 +84,16 @@ const ArtistIdStoryRoute = ArtistIdStoryRouteImport.update({
   path: '/artist/$id/story',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JudgeRoundIdRoute = JudgeRoundIdRouteImport.update({
+  id: '/judge/round/$id',
+  path: '/judge/round/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JudgeScoreEntryIdRoute = JudgeScoreEntryIdRouteImport.update({
+  id: '/judge/score/$entryId',
+  path: '/judge/score/$entryId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -87,7 +105,10 @@ export interface FileRoutesByFullPath {
   '/signin': typeof SigninRoute
   '/welcome': typeof WelcomeRoute
   '/onboarding/role': typeof OnboardingRoleRoute
+  '/judge/': typeof JudgeIndexRoute
   '/artist/$id/story': typeof ArtistIdStoryRoute
+  '/judge/round/$id': typeof JudgeRoundIdRoute
+  '/judge/score/$entryId': typeof JudgeScoreEntryIdRoute
   '/artist/$id/': typeof ArtistIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -100,7 +121,10 @@ export interface FileRoutesByTo {
   '/signin': typeof SigninRoute
   '/welcome': typeof WelcomeRoute
   '/onboarding/role': typeof OnboardingRoleRoute
+  '/judge': typeof JudgeIndexRoute
   '/artist/$id/story': typeof ArtistIdStoryRoute
+  '/judge/round/$id': typeof JudgeRoundIdRoute
+  '/judge/score/$entryId': typeof JudgeScoreEntryIdRoute
   '/artist/$id': typeof ArtistIdIndexRoute
 }
 export interface FileRoutesById {
@@ -114,7 +138,10 @@ export interface FileRoutesById {
   '/signin': typeof SigninRoute
   '/welcome': typeof WelcomeRoute
   '/onboarding/role': typeof OnboardingRoleRoute
+  '/judge/': typeof JudgeIndexRoute
   '/artist/$id/story': typeof ArtistIdStoryRoute
+  '/judge/round/$id': typeof JudgeRoundIdRoute
+  '/judge/score/$entryId': typeof JudgeScoreEntryIdRoute
   '/artist/$id/': typeof ArtistIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -129,7 +156,10 @@ export interface FileRouteTypes {
     | '/signin'
     | '/welcome'
     | '/onboarding/role'
+    | '/judge/'
     | '/artist/$id/story'
+    | '/judge/round/$id'
+    | '/judge/score/$entryId'
     | '/artist/$id/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -142,7 +172,10 @@ export interface FileRouteTypes {
     | '/signin'
     | '/welcome'
     | '/onboarding/role'
+    | '/judge'
     | '/artist/$id/story'
+    | '/judge/round/$id'
+    | '/judge/score/$entryId'
     | '/artist/$id'
   id:
     | '__root__'
@@ -155,7 +188,10 @@ export interface FileRouteTypes {
     | '/signin'
     | '/welcome'
     | '/onboarding/role'
+    | '/judge/'
     | '/artist/$id/story'
+    | '/judge/round/$id'
+    | '/judge/score/$entryId'
     | '/artist/$id/'
   fileRoutesById: FileRoutesById
 }
@@ -169,7 +205,10 @@ export interface RootRouteChildren {
   SigninRoute: typeof SigninRoute
   WelcomeRoute: typeof WelcomeRoute
   OnboardingRoleRoute: typeof OnboardingRoleRoute
+  JudgeIndexRoute: typeof JudgeIndexRoute
   ArtistIdStoryRoute: typeof ArtistIdStoryRoute
+  JudgeRoundIdRoute: typeof JudgeRoundIdRoute
+  JudgeScoreEntryIdRoute: typeof JudgeScoreEntryIdRoute
   ArtistIdIndexRoute: typeof ArtistIdIndexRoute
 }
 
@@ -231,6 +270,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WelcomeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/judge/': {
+      id: '/judge/'
+      path: '/judge'
+      fullPath: '/judge/'
+      preLoaderRoute: typeof JudgeIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding/role': {
       id: '/onboarding/role'
       path: '/onboarding/role'
@@ -252,6 +298,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArtistIdStoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/judge/round/$id': {
+      id: '/judge/round/$id'
+      path: '/judge/round/$id'
+      fullPath: '/judge/round/$id'
+      preLoaderRoute: typeof JudgeRoundIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/judge/score/$entryId': {
+      id: '/judge/score/$entryId'
+      path: '/judge/score/$entryId'
+      fullPath: '/judge/score/$entryId'
+      preLoaderRoute: typeof JudgeScoreEntryIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -265,7 +325,10 @@ const rootRouteChildren: RootRouteChildren = {
   SigninRoute: SigninRoute,
   WelcomeRoute: WelcomeRoute,
   OnboardingRoleRoute: OnboardingRoleRoute,
+  JudgeIndexRoute: JudgeIndexRoute,
   ArtistIdStoryRoute: ArtistIdStoryRoute,
+  JudgeRoundIdRoute: JudgeRoundIdRoute,
+  JudgeScoreEntryIdRoute: JudgeScoreEntryIdRoute,
   ArtistIdIndexRoute: ArtistIdIndexRoute,
 }
 export const routeTree = rootRouteImport
