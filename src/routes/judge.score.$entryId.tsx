@@ -68,6 +68,7 @@ function JudgeScorePage() {
   const save = async (goNext: boolean) => {
     if (!entry) return;
     setSaving(true);
+    try {
     await judgingService.saveScore({
       roundId: entry.roundId,
       entryId: entry.id,
@@ -76,8 +77,15 @@ function JudgeScorePage() {
       comment,
       status: "submitted",
     });
+    } catch (e) {
+      setSaving(false);
+      toast.error(e instanceof Error ? e.message : "평가를 저장하지 못했습니다");
+      return;
+    }
     setSaving(false);
     void qc.invalidateQueries({ queryKey: ["judge"] });
+    // Internal admin progress/ranking recompute in the mock; public live-vote is unaffected.
+    void qc.invalidateQueries({ queryKey: ["admin"] });
     toast.success("평가를 저장했습니다");
     if (goNext && nextEntryId) navigate({ to: "/judge/score/$entryId", params: { entryId: nextEntryId } });
     else navigate({ to: "/judge/round/$id", params: { id: entry.roundId } });

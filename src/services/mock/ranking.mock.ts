@@ -10,7 +10,15 @@
  */
 import type { RankingService } from "@/services/contracts";
 import { entries, evaluationRules, judgeScores, users, votes } from "@/mocks/data";
-import type { AdminRankingEntry, EvaluationWeights, RankChange, RankingEntry, RankingKind } from "@/types";
+import type {
+  AdminRankingEntry,
+  EvaluationWeights,
+  RankChange,
+  RankingEntry,
+  RankingKind,
+  RankingSnapshotVersion,
+  RoundResultState,
+} from "@/types";
 import { assertRole } from "@/stores/session";
 import { delay, nowIso } from "./util";
 
@@ -19,7 +27,6 @@ const previousRanks: Record<string, number> = {
   e_7: 9, e_8: 7, e_9: 8, e_10: 12, e_11: 10, e_12: 11,
 };
 
-const finalizedRounds = new Map<string, string>();
 const JUDGE_COUNT = users.filter((u) => u.roles.includes("judge")).length;
 
 function baseVotes(entryId: string) {
@@ -122,18 +129,124 @@ function toPublic(rows: AdminRankingEntry[]): RankingEntry[] {
   }));
 }
 
+/* ----------------------------- result lifecycle ----------------------------- */
+
+type Explicit = "REVIEW" | "CONFIRMED" | "PUBLISHED";
+interface RoundMeta {
+  explicit: Explicit | null;
+  confirmedAt?: string | undefined;
+  publishedAt?: string | undefined;
+  publishedRows?: RankingEntry[];
+  changedAfterPublish: boolean;
+  history: RankingSnapshotVersion[];
+}
+const meta = new Map<string, RoundMeta>();
+
+function scoreCounts(roundId: string) {
+  const pool = entries.filter((e) => e.roundId === roundId);
+  const submitted = judgeScores.filter(
+    (s) => s.status === "submitted" && pool.some((e) => e.id === s.entryId),
+  ).length;
+  return { submitted, required: pool.length * JUDGE_COUNT };
+}
+
+function snapshotOf(roundId: string, reason: string, version: number): RankingSnapshotVersion {
+  return {
+    version,
+    roundId,
+    createdAt: nowIso(),
+    reason,
+    provisional: !isJudgingComplete(roundId),
+    rows: computeRanking(roundId, "final").map((r) => ({ entryId: r.entryId, artistName: r.artistName, rank: r.rank })),
+  };
+}
+
+function metaOf(roundId: string): RoundMeta {
+  let m = meta.get(roundId);
+  if (!m) {
+    m = { explicit: null, changedAfterPublish: false, history: [] };
+    meta.set(roundId, m);
+    m.history.unshift(snapshotOf(roundId, "초기 스냅샷", 1));
+  }
+  return m;
+}
+
+function pushSnapshot(roundId: string, reason: string) {
+  const m = metaOf(roundId);
+  m.history.unshift(snapshotOf(roundId, reason, (m.history[0]?.version ?? 0) + 1));
+}
+
+export function resultStateOf(roundId: string): RoundResultState {
+  const m = metaOf(roundId);
+  const { submitted, required } = scoreCounts(roundId);
+  const derived = submitted === 0 ? "DRAFT" : submitted < required ? "JUDGING" : "SCORED";
+  return {
+    roundId,
+    status: m.explicit ?? derived,
+    provisional: submitted < required,
+    submittedScores: submitted,
+    requiredScores: required,
+    changedAfterPublish: m.changedAfterPublish,
+    confirmedAt: m.confirmedAt,
+    publishedAt: m.publishedAt,
+    currentVersion: m.history[0]?.version ?? 1,
+  };
+}
+
+/**
+ * Called by judging/admin mocks whenever source data (scores, applied rule) changes.
+ * Recomputes a new snapshot version. REVIEW/CONFIRMED are invalidated (state conflict)
+ * and fall back to the derived status; PUBLISHED keeps its frozen public snapshot.
+ */
+export function onSourceChanged(roundId: string, reason: string) {
+  const m = metaOf(roundId);
+  pushSnapshot(roundId, reason);
+  if (m.explicit === "REVIEW" || m.explicit === "CONFIRMED") {
+    m.explicit = null;
+    m.confirmedAt = undefined;
+  } else if (m.explicit === "PUBLISHED") {
+    m.changedAfterPublish = true;
+  }
+}
+
+export function isResultLocked(roundId: string) {
+  const s = metaOf(roundId).explicit;
+  return s === "CONFIRMED" || s === "PUBLISHED";
+}
+
+function transition(roundId: string, from: RoundResultState["status"][], to: Explicit | null, msg: string) {
+  assertRole("admin");
+  const current = resultStateOf(roundId);
+  if (!from.includes(current.status)) throw new Error(`${msg} (현재 상태: ${current.status})`);
+  const m = metaOf(roundId);
+  m.explicit = to;
+  return m;
+}
+
 export const mockRankingService: RankingService = {
   async getPublicRanking({ roundId, kind, limit }) {
-    const publishable = kind === "live-vote" || (finalizedRounds.has(roundId) && isJudgingComplete(roundId));
-    const rows = publishable ? toPublic(computeRanking(roundId, kind)).slice(0, limit ?? undefined) : [];
+    const m = metaOf(roundId);
+    if (kind === "final") {
+      // Public final = frozen snapshot captured at publish time only.
+      const published = m.explicit === "PUBLISHED" && Boolean(m.publishedRows);
+      return delay({
+        id: `snap_pub_${roundId}_final`,
+        auditionId: "a_1",
+        roundId,
+        kind,
+        published,
+        entries: published ? m.publishedRows!.slice(0, limit ?? undefined) : [],
+        updatedAt: m.publishedAt ?? nowIso(),
+      });
+    }
     return delay({
-      id: `snap_pub_${roundId}_${kind}`,
+      id: `snap_pub_${roundId}_live`,
       auditionId: "a_1",
       roundId,
       kind,
-      published: publishable,
-      entries: rows,
-      updatedAt: kind === "final" ? (finalizedRounds.get(roundId) ?? nowIso()) : nowIso(),
+      published: true,
+      entries: toPublic(computeRanking(roundId, "live-vote")).slice(0, limit ?? undefined),
+      updatedAt: nowIso(),
     });
   },
   async getAdminRanking({ roundId, kind, weights }) {
@@ -143,16 +256,41 @@ export const mockRankingService: RankingService = {
       auditionId: "a_1",
       roundId,
       kind,
-      published: kind === "live-vote" || finalizedRounds.has(roundId),
+      published: kind === "live-vote" || metaOf(roundId).explicit === "PUBLISHED",
       entries: computeRanking(roundId, kind, weights),
       updatedAt: nowIso(),
     });
   },
-  async finalizeRanking(roundId) {
+  async getResultState(roundId) {
     assertRole("admin");
-    if (!isJudgingComplete(roundId)) throw new Error("모든 심사가 제출되지 않아 확정할 수 없습니다.");
-    const finalizedAt = nowIso();
-    finalizedRounds.set(roundId, finalizedAt);
-    return delay({ finalizedAt }, 600);
+    return delay(resultStateOf(roundId));
+  },
+  async listSnapshots(roundId) {
+    assertRole("admin");
+    return delay(structuredClone(metaOf(roundId).history));
+  },
+  async startReview(roundId) {
+    transition(roundId, ["SCORED"], "REVIEW", "모든 심사가 제출된 뒤에만 검토를 시작할 수 있습니다.");
+    return delay(resultStateOf(roundId), 300);
+  },
+  async cancelReview(roundId) {
+    transition(roundId, ["REVIEW"], null, "검토 중일 때만 되돌릴 수 있습니다.");
+    return delay(resultStateOf(roundId), 300);
+  },
+  async confirmResult(roundId) {
+    if (!isJudgingComplete(roundId)) throw new Error("심사 미완료 결과는 확정할 수 없습니다.");
+    const m = transition(roundId, ["REVIEW"], "CONFIRMED", "검토 단계에서만 확정할 수 있습니다.");
+    m.confirmedAt = nowIso();
+    pushSnapshot(roundId, "결과 확정");
+    return delay(resultStateOf(roundId), 400);
+  },
+  async publishResult(roundId) {
+    if (!isJudgingComplete(roundId)) throw new Error("심사 미완료 결과는 공개할 수 없습니다.");
+    const m = transition(roundId, ["CONFIRMED"], "PUBLISHED", "확정된 결과만 공개할 수 있습니다.");
+    m.publishedAt = nowIso();
+    m.publishedRows = toPublic(computeRanking(roundId, "final"));
+    m.changedAfterPublish = false;
+    pushSnapshot(roundId, "공개(publish)");
+    return delay(resultStateOf(roundId), 400);
   },
 };

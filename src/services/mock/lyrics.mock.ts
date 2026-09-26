@@ -39,6 +39,7 @@ export const mockLyricsService: LyricsService = {
   async requestAutoSync(trackId) {
     assertRole("admin");
     const doc = ensureDoc(trackId);
+    if (!doc.canonicalText.trim()) throw new Error("저장된 원본 가사가 없습니다.");
     doc.status = "processing";
     syncTrackStatus(doc);
     const lines = doc.canonicalText
@@ -62,13 +63,19 @@ export const mockLyricsService: LyricsService = {
   async updateLines(trackId, lines) {
     assertRole("admin");
     const doc = ensureDoc(trackId);
-    doc.lines = lines;
+    if (lines.some((l) => !Number.isFinite(l.startSec) || l.startSec < 0)) throw new Error("시작 시간이 올바르지 않습니다.");
+    if (lines.some((l, i) => i > 0 && l.startSec <= lines[i - 1]!.startSec))
+      throw new Error("타임스탬프는 앞 줄보다 커야 합니다.");
+    doc.lines = lines.map((l, i) => ({ ...l, endSec: lines[i + 1]?.startSec ?? l.endSec ?? l.startSec + 4 }));
+    if (doc.status === "published") doc.status = "review";
     doc.updatedAt = nowIso();
+    syncTrackStatus(doc);
     return delay(clone(doc), 200);
   },
   async publish(trackId) {
     assertRole("admin");
     const doc = ensureDoc(trackId);
+    if (doc.status !== "review" || doc.lines.length === 0) throw new Error("자동 싱크 검수 단계에서만 공개할 수 있습니다.");
     doc.status = "published";
     doc.updatedAt = nowIso();
     syncTrackStatus(doc);

@@ -51,12 +51,19 @@ function AdminLyrics() {
 
   const run = async (fn: () => Promise<LyricsDocument>, message: string) => {
     setBusy(true);
-    const next = await fn();
-    setDoc(next);
-    setBusy(false);
-    toast.success(message);
-    void refetch();
+    try {
+      const next = await fn();
+      setDoc(next);
+      toast.success(message);
+      void refetch();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "저장하지 못했습니다");
+    } finally {
+      setBusy(false);
+    }
   };
+
+  const dirtyLines = Boolean(data && doc && JSON.stringify(data.lines) !== JSON.stringify(doc.lines));
 
   const updateLine = (id: string, patch: Partial<LyricLine>) => {
     if (!doc) return;
@@ -99,13 +106,14 @@ function AdminLyrics() {
           </Button>
           <Button
             size="sm"
-            disabled={busy || !text.trim()}
+            disabled={busy || !text.trim() || text !== doc?.canonicalText}
             onClick={() => run(() => lyricsService.requestAutoSync(trackId), "자동 싱크가 생성됐습니다")}
           >
             {busy ? "처리 중..." : "자동 싱크 생성"}
           </Button>
         </div>
         <p className="mt-2 text-xs text-muted-foreground">
+          {doc && text !== doc.canonicalText ? "먼저 저장해야 자동 싱크를 생성할 수 있습니다. " : ""}
           자동 싱크는 mock 서비스로 동작합니다. 실제 AI 정렬 서버는 이후 단계에서 연결합니다.
         </p>
       </AdminSection>
@@ -142,12 +150,19 @@ function AdminLyrics() {
             </Button>
             <Button
               size="sm"
-              disabled={busy || doc.status === "published"}
-              onClick={() => run(() => lyricsService.publish(trackId), "가사를 공개했습니다")}
+              disabled={busy || doc.status !== "review" || dirtyLines}
+              onClick={() => run(() => lyricsService.publish(trackId), "검수를 마치고 가사를 공개했습니다")}
             >
-              공개하기
+              검수 완료 · 공개
             </Button>
           </div>
+          <p className="mt-2 text-[11px] text-muted-foreground">
+            {dirtyLines
+              ? "저장하지 않은 수정이 있습니다. 저장 후 공개할 수 있습니다."
+              : doc.status === "published"
+                ? "공개된 가사입니다. 수정 저장 시 다시 검수 단계로 돌아갑니다."
+                : "타임스탬프는 앞 줄보다 커야 합니다."}
+          </p>
         </AdminSection>
       )}
     </div>

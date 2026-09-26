@@ -28,6 +28,8 @@ import type {
   PublicEntry,
   RankingKind,
   RankingSnapshot,
+  RankingSnapshotVersion,
+  RoundResultState,
   Round,
   TicketBalance,
   TicketType,
@@ -73,7 +75,18 @@ export interface RankingService {
     kind: RankingKind;
     weights?: EvaluationWeights;
   }): Promise<RankingSnapshot<AdminRankingEntry>>;
-  finalizeRanking(roundId: string): Promise<{ finalizedAt: string }>;
+  /** ADMIN — derived + explicit lifecycle state. */
+  getResultState(roundId: string): Promise<RoundResultState>;
+  /** ADMIN — mock snapshot history, newest first. Rank numbers are never edited directly. */
+  listSnapshots(roundId: string): Promise<RankingSnapshotVersion[]>;
+  /** SCORED -> REVIEW */
+  startReview(roundId: string): Promise<RoundResultState>;
+  /** REVIEW -> SCORED (back out) */
+  cancelReview(roundId: string): Promise<RoundResultState>;
+  /** REVIEW -> CONFIRMED. Real impl: second-approver flow server-side. */
+  confirmResult(roundId: string): Promise<RoundResultState>;
+  /** CONFIRMED -> PUBLISHED. Freezes the public final snapshot. */
+  publishResult(roundId: string): Promise<RoundResultState>;
 }
 
 export interface VotingService {
@@ -115,8 +128,10 @@ export interface AdminService {
   getEvaluationRule(roundId: string): Promise<EvaluationRule>;
   /** Dry run — never persists. */
   simulateEvaluationRule(roundId: string, weights: EvaluationWeights): Promise<RuleSimulationRow[]>;
-  /** Saves as `draft` only. Approval of operating policy is out of scope. */
+  /** Saves as `draft` only (draftWeights). Does not affect ranking until applied. */
   saveEvaluationRuleDraft(roundId: string, weights: EvaluationWeights): Promise<EvaluationRule>;
+  /** Applies the reviewed draft to the round (mock). Blocked once the result is CONFIRMED/PUBLISHED. */
+  applyEvaluationRule(roundId: string): Promise<EvaluationRule>;
   listUsers(): Promise<import("@/types").User[]>;
   listAuditLogs(): Promise<AuditLog[]>;
   listVoteStats(roundId: string): Promise<{ entryId: string; artistName: string; free: number; standard: number; total: number }[]>;

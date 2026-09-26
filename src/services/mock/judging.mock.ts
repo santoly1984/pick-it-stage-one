@@ -4,6 +4,7 @@ import type { JudgeScore } from "@/types";
 import { assertRole } from "@/stores/session";
 import { clone, delay, nowIso } from "./util";
 import { toPublicEntry } from "./mappers";
+import { onSourceChanged } from "./ranking.mock";
 
 /** JUDGE-ONLY adapter. Every call checks the mock session role. */
 export const mockJudgingService: JudgingService = {
@@ -39,6 +40,7 @@ export const mockJudgingService: JudgingService = {
     const next: JudgeScore = { ...input, id: `js_${input.entryId}_${input.judgeId}`, updatedAt: nowIso() };
     if (idx >= 0) judgeScores[idx] = next;
     else judgeScores.push(next);
+    onSourceChanged(input.roundId, `심사 ${next.status === "submitted" ? "제출" : "임시저장"} · ${input.judgeId} → ${input.entryId}`);
     return delay(clone(next), 350);
   },
 };
