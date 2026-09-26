@@ -1,9 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { Play } from "lucide-react";
-import type { Entry } from "@/types";
+import type { PublicEntry } from "@/types";
 import { usePlayEntry } from "@/hooks/usePlayEntry";
 
-export function EntryCard({ entry, queue }: { entry: Entry; queue?: string[] }) {
+export function EntryCard({ entry, queue }: { entry: PublicEntry; queue?: string[] }) {
   const play = usePlayEntry();
   return (
     <div className="w-40 shrink-0">

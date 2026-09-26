@@ -22,7 +22,7 @@ export function CommentThread({ entryId }: { entryId?: string }) {
       communityService.addComment({
         entryId: entryId ?? replyTo?.entryId ?? "e_1",
         body,
-        parentId: replyTo?.id,
+        ...(replyTo ? { parentId: replyTo.id } : {}),
       }),
     onSuccess: () => {
       setBody("");

@@ -18,7 +18,7 @@ export const Route = createFileRoute("/onboarding/role")({
   component: RoleOnboarding,
 });
 
-const ROLES: { role: UserRole; title: string; desc: string; icon: typeof Users }[] = [
+const ROLES: { role: "fan" | "challenger"; title: string; desc: string; icon: typeof Users }[] = [
   { role: "fan", title: "팬", desc: "무대를 듣고 투표로 응원합니다.", icon: Users },
   { role: "challenger", title: "참가자", desc: "오디션에 지원하고 내 무대를 올립니다.", icon: Mic2 },
 ];
@@ -27,7 +27,7 @@ function RoleOnboarding() {
   const navigate = useNavigate();
   const [selected, setSelected] = useState<UserRole[]>(["fan"]);
 
-  const toggle = (role: UserRole) => {
+  const toggle = (role: "fan" | "challenger") => {
     // Fan + Challenger can be held together. Judge/Admin are never self-selected.
     setSelected((prev) => {
       const base = prev.filter((r) => r === "fan" || r === "challenger");

@@ -64,7 +64,7 @@ export function FullPlayer() {
           value={[currentTime]}
           max={Math.max(duration, 1)}
           step={1}
-          onValueChange={([v]) => seek(v)}
+          onValueChange={([v]) => seek(v ?? 0)}
           aria-label="재생 위치"
         />
         <div className="mt-2 flex justify-between text-[11px] tabular-nums text-muted-foreground">
