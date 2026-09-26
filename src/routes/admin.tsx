@@ -7,7 +7,7 @@ export const Route = createFileRoute("/admin")({
   component: AdminLayout,
 });
 
-const TABS: { to: string; label: string; exact?: boolean }[] = [
+const TABS = [
   { to: "/admin", label: "대시보드", exact: true },
   { to: "/admin/auditions", label: "오디션" },
   { to: "/admin/entries", label: "참가자" },
@@ -17,7 +17,7 @@ const TABS: { to: string; label: string; exact?: boolean }[] = [
   { to: "/admin/lyrics", label: "가사" },
   { to: "/admin/users", label: "사용자" },
   { to: "/admin/audit", label: "감사로그" },
-];
+] as const;
 
 /**
  * ADMIN AREA — the only place where score breakdowns may be rendered.
@@ -43,7 +43,7 @@ function AdminShell() {
         </div>
         <nav className="flex gap-1 overflow-x-auto px-4 pb-2">
           {TABS.map((t) => {
-            const active = t.exact ? pathname === t.to : pathname.startsWith(t.to);
+            const active = "exact" in t ? pathname === t.to : pathname.startsWith(t.to);
             return (
               <Link
                 key={t.to}
