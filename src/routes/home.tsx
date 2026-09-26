@@ -72,6 +72,17 @@ function Home() {
         </div>
       </section>
 
+      <section className="px-5 pt-4">
+        <p className="text-xs text-muted-foreground">곧 열릴 프로그램</p>
+        <div className="mt-2 flex flex-wrap gap-2">
+          {["일반인 오디션", "대학생 오디션", "시니어 오디션"].map((p) => (
+            <span key={p} className="rounded-full bg-surface px-3 py-1.5 text-xs text-muted-foreground">
+              {p}
+            </span>
+          ))}
+        </div>
+      </section>
+
       <section className="px-5 pt-10">
         <div className="flex items-end justify-between gap-3">
           <div className="min-w-0">

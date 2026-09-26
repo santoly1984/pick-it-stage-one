@@ -40,7 +40,7 @@ function SignIn() {
               key={label}
               type="button"
               onClick={go}
-              className="flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-border bg-surface text-sm font-semibold"
+              className="flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-surface text-sm font-semibold"
             >
               <Icon className="size-4" />
               {label}
