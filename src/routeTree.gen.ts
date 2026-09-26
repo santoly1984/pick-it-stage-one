@@ -11,11 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApplyRouteImport } from './routes/apply'
+import { Route as CommunityRouteImport } from './routes/community'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as SigninRouteImport } from './routes/signin'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as OnboardingRoleRouteImport } from './routes/onboarding.role'
+import { Route as ArtistIdIndexRouteImport } from './routes/artist.$id.index'
+import { Route as ArtistIdStoryRouteImport } from './routes/artist.$id.story'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -25,6 +28,11 @@ const IndexRoute = IndexRouteImport.update({
 const ApplyRoute = ApplyRouteImport.update({
   id: '/apply',
   path: '/apply',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunityRoute = CommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HomeRoute = HomeRouteImport.update({
@@ -52,73 +60,104 @@ const OnboardingRoleRoute = OnboardingRoleRouteImport.update({
   path: '/onboarding/role',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArtistIdIndexRoute = ArtistIdIndexRouteImport.update({
+  id: '/artist/$id/',
+  path: '/artist/$id/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArtistIdStoryRoute = ArtistIdStoryRouteImport.update({
+  id: '/artist/$id/story',
+  path: '/artist/$id/story',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/apply': typeof ApplyRoute
+  '/community': typeof CommunityRoute
   '/home': typeof HomeRoute
   '/ranking': typeof RankingRoute
   '/signin': typeof SigninRoute
   '/welcome': typeof WelcomeRoute
   '/onboarding/role': typeof OnboardingRoleRoute
+  '/artist/$id/story': typeof ArtistIdStoryRoute
+  '/artist/$id/': typeof ArtistIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/apply': typeof ApplyRoute
+  '/community': typeof CommunityRoute
   '/home': typeof HomeRoute
   '/ranking': typeof RankingRoute
   '/signin': typeof SigninRoute
   '/welcome': typeof WelcomeRoute
   '/onboarding/role': typeof OnboardingRoleRoute
+  '/artist/$id/story': typeof ArtistIdStoryRoute
+  '/artist/$id': typeof ArtistIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/apply': typeof ApplyRoute
+  '/community': typeof CommunityRoute
   '/home': typeof HomeRoute
   '/ranking': typeof RankingRoute
   '/signin': typeof SigninRoute
   '/welcome': typeof WelcomeRoute
   '/onboarding/role': typeof OnboardingRoleRoute
+  '/artist/$id/story': typeof ArtistIdStoryRoute
+  '/artist/$id/': typeof ArtistIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/apply'
+    | '/community'
     | '/home'
     | '/ranking'
     | '/signin'
     | '/welcome'
     | '/onboarding/role'
+    | '/artist/$id/story'
+    | '/artist/$id/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/apply'
+    | '/community'
     | '/home'
     | '/ranking'
     | '/signin'
     | '/welcome'
     | '/onboarding/role'
+    | '/artist/$id/story'
+    | '/artist/$id'
   id:
     | '__root__'
     | '/'
     | '/apply'
+    | '/community'
     | '/home'
     | '/ranking'
     | '/signin'
     | '/welcome'
     | '/onboarding/role'
+    | '/artist/$id/story'
+    | '/artist/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApplyRoute: typeof ApplyRoute
+  CommunityRoute: typeof CommunityRoute
   HomeRoute: typeof HomeRoute
   RankingRoute: typeof RankingRoute
   SigninRoute: typeof SigninRoute
   WelcomeRoute: typeof WelcomeRoute
   OnboardingRoleRoute: typeof OnboardingRoleRoute
+  ArtistIdStoryRoute: typeof ArtistIdStoryRoute
+  ArtistIdIndexRoute: typeof ArtistIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -135,6 +174,13 @@ declare module '@tanstack/react-router' {
       path: '/apply'
       fullPath: '/apply'
       preLoaderRoute: typeof ApplyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/community': {
+      id: '/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof CommunityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/home': {
@@ -172,17 +218,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingRoleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/artist/$id/': {
+      id: '/artist/$id/'
+      path: '/artist/$id'
+      fullPath: '/artist/$id/'
+      preLoaderRoute: typeof ArtistIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/artist/$id/story': {
+      id: '/artist/$id/story'
+      path: '/artist/$id/story'
+      fullPath: '/artist/$id/story'
+      preLoaderRoute: typeof ArtistIdStoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApplyRoute: ApplyRoute,
+  CommunityRoute: CommunityRoute,
   HomeRoute: HomeRoute,
   RankingRoute: RankingRoute,
   SigninRoute: SigninRoute,
   WelcomeRoute: WelcomeRoute,
   OnboardingRoleRoute: OnboardingRoleRoute,
+  ArtistIdStoryRoute: ArtistIdStoryRoute,
+  ArtistIdIndexRoute: ArtistIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
