@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApplyRouteImport } from './routes/apply'
 import { Route as CommunityRouteImport } from './routes/community'
 import { Route as HomeRouteImport } from './routes/home'
+import { Route as PlayerRouteImport } from './routes/player'
 import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as SigninRouteImport } from './routes/signin'
 import { Route as WelcomeRouteImport } from './routes/welcome'
@@ -38,6 +39,11 @@ const CommunityRoute = CommunityRouteImport.update({
 const HomeRoute = HomeRouteImport.update({
   id: '/home',
   path: '/home',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlayerRoute = PlayerRouteImport.update({
+  id: '/player',
+  path: '/player',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RankingRoute = RankingRouteImport.update({
@@ -76,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/apply': typeof ApplyRoute
   '/community': typeof CommunityRoute
   '/home': typeof HomeRoute
+  '/player': typeof PlayerRoute
   '/ranking': typeof RankingRoute
   '/signin': typeof SigninRoute
   '/welcome': typeof WelcomeRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/apply': typeof ApplyRoute
   '/community': typeof CommunityRoute
   '/home': typeof HomeRoute
+  '/player': typeof PlayerRoute
   '/ranking': typeof RankingRoute
   '/signin': typeof SigninRoute
   '/welcome': typeof WelcomeRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/apply': typeof ApplyRoute
   '/community': typeof CommunityRoute
   '/home': typeof HomeRoute
+  '/player': typeof PlayerRoute
   '/ranking': typeof RankingRoute
   '/signin': typeof SigninRoute
   '/welcome': typeof WelcomeRoute
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/apply'
     | '/community'
     | '/home'
+    | '/player'
     | '/ranking'
     | '/signin'
     | '/welcome'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/apply'
     | '/community'
     | '/home'
+    | '/player'
     | '/ranking'
     | '/signin'
     | '/welcome'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/apply'
     | '/community'
     | '/home'
+    | '/player'
     | '/ranking'
     | '/signin'
     | '/welcome'
@@ -152,6 +164,7 @@ export interface RootRouteChildren {
   ApplyRoute: typeof ApplyRoute
   CommunityRoute: typeof CommunityRoute
   HomeRoute: typeof HomeRoute
+  PlayerRoute: typeof PlayerRoute
   RankingRoute: typeof RankingRoute
   SigninRoute: typeof SigninRoute
   WelcomeRoute: typeof WelcomeRoute
@@ -188,6 +201,13 @@ declare module '@tanstack/react-router' {
       path: '/home'
       fullPath: '/home'
       preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/player': {
+      id: '/player'
+      path: '/player'
+      fullPath: '/player'
+      preLoaderRoute: typeof PlayerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ranking': {
@@ -240,6 +260,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApplyRoute: ApplyRoute,
   CommunityRoute: CommunityRoute,
   HomeRoute: HomeRoute,
+  PlayerRoute: PlayerRoute,
   RankingRoute: RankingRoute,
   SigninRoute: SigninRoute,
   WelcomeRoute: WelcomeRoute,
