@@ -78,7 +78,7 @@ function RoleOnboarding() {
             setSession(selected.includes("challenger") ? DEMO_ACCOUNTS.challenger : DEMO_ACCOUNTS.fan);
             navigate({ to: destination });
           }}
-          className="h-12 w-full rounded-xl bg-primary text-sm font-semibold disabled:opacity-40"
+          className="h-12 w-full rounded-xl bg-primary text-sm text-primary-foreground font-semibold disabled:opacity-40"
         >
           계속하기
         </button>
