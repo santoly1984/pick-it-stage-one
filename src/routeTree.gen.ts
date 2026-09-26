@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ApplyRouteImport } from './routes/apply'
 import { Route as CommunityRouteImport } from './routes/community'
 import { Route as HomeRouteImport } from './routes/home'
@@ -17,6 +18,10 @@ import { Route as PlayerRouteImport } from './routes/player'
 import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as SigninRouteImport } from './routes/signin'
 import { Route as WelcomeRouteImport } from './routes/welcome'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminAuditionsRouteImport } from './routes/admin.auditions'
+import { Route as AdminEntriesRouteImport } from './routes/admin.entries'
+import { Route as AdminVotesRouteImport } from './routes/admin.votes'
 import { Route as JudgeIndexRouteImport } from './routes/judge.index'
 import { Route as OnboardingRoleRouteImport } from './routes/onboarding.role'
 import { Route as ArtistIdIndexRouteImport } from './routes/artist.$id.index'
@@ -27,6 +32,11 @@ import { Route as JudgeScoreEntryIdRouteImport } from './routes/judge.score.$ent
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApplyRoute = ApplyRouteImport.update({
@@ -64,6 +74,26 @@ const WelcomeRoute = WelcomeRouteImport.update({
   path: '/welcome',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAuditionsRoute = AdminAuditionsRouteImport.update({
+  id: '/auditions',
+  path: '/auditions',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEntriesRoute = AdminEntriesRouteImport.update({
+  id: '/entries',
+  path: '/entries',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminVotesRoute = AdminVotesRouteImport.update({
+  id: '/votes',
+  path: '/votes',
+  getParentRoute: () => AdminRoute,
+} as any)
 const JudgeIndexRoute = JudgeIndexRouteImport.update({
   id: '/judge/',
   path: '/judge/',
@@ -97,6 +127,7 @@ const JudgeScoreEntryIdRoute = JudgeScoreEntryIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/apply': typeof ApplyRoute
   '/community': typeof CommunityRoute
   '/home': typeof HomeRoute
@@ -104,7 +135,11 @@ export interface FileRoutesByFullPath {
   '/ranking': typeof RankingRoute
   '/signin': typeof SigninRoute
   '/welcome': typeof WelcomeRoute
+  '/admin/auditions': typeof AdminAuditionsRoute
+  '/admin/entries': typeof AdminEntriesRoute
+  '/admin/votes': typeof AdminVotesRoute
   '/onboarding/role': typeof OnboardingRoleRoute
+  '/admin/': typeof AdminIndexRoute
   '/judge/': typeof JudgeIndexRoute
   '/artist/$id/story': typeof ArtistIdStoryRoute
   '/judge/round/$id': typeof JudgeRoundIdRoute
@@ -120,7 +155,11 @@ export interface FileRoutesByTo {
   '/ranking': typeof RankingRoute
   '/signin': typeof SigninRoute
   '/welcome': typeof WelcomeRoute
+  '/admin/auditions': typeof AdminAuditionsRoute
+  '/admin/entries': typeof AdminEntriesRoute
+  '/admin/votes': typeof AdminVotesRoute
   '/onboarding/role': typeof OnboardingRoleRoute
+  '/admin': typeof AdminIndexRoute
   '/judge': typeof JudgeIndexRoute
   '/artist/$id/story': typeof ArtistIdStoryRoute
   '/judge/round/$id': typeof JudgeRoundIdRoute
@@ -130,6 +169,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/apply': typeof ApplyRoute
   '/community': typeof CommunityRoute
   '/home': typeof HomeRoute
@@ -137,7 +177,11 @@ export interface FileRoutesById {
   '/ranking': typeof RankingRoute
   '/signin': typeof SigninRoute
   '/welcome': typeof WelcomeRoute
+  '/admin/auditions': typeof AdminAuditionsRoute
+  '/admin/entries': typeof AdminEntriesRoute
+  '/admin/votes': typeof AdminVotesRoute
   '/onboarding/role': typeof OnboardingRoleRoute
+  '/admin/': typeof AdminIndexRoute
   '/judge/': typeof JudgeIndexRoute
   '/artist/$id/story': typeof ArtistIdStoryRoute
   '/judge/round/$id': typeof JudgeRoundIdRoute
@@ -148,6 +192,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/apply'
     | '/community'
     | '/home'
@@ -155,7 +200,11 @@ export interface FileRouteTypes {
     | '/ranking'
     | '/signin'
     | '/welcome'
+    | '/admin/auditions'
+    | '/admin/entries'
+    | '/admin/votes'
     | '/onboarding/role'
+    | '/admin/'
     | '/judge/'
     | '/artist/$id/story'
     | '/judge/round/$id'
@@ -171,7 +220,11 @@ export interface FileRouteTypes {
     | '/ranking'
     | '/signin'
     | '/welcome'
+    | '/admin/auditions'
+    | '/admin/entries'
+    | '/admin/votes'
     | '/onboarding/role'
+    | '/admin'
     | '/judge'
     | '/artist/$id/story'
     | '/judge/round/$id'
@@ -180,6 +233,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/apply'
     | '/community'
     | '/home'
@@ -187,7 +241,11 @@ export interface FileRouteTypes {
     | '/ranking'
     | '/signin'
     | '/welcome'
+    | '/admin/auditions'
+    | '/admin/entries'
+    | '/admin/votes'
     | '/onboarding/role'
+    | '/admin/'
     | '/judge/'
     | '/artist/$id/story'
     | '/judge/round/$id'
@@ -197,6 +255,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   ApplyRoute: typeof ApplyRoute
   CommunityRoute: typeof CommunityRoute
   HomeRoute: typeof HomeRoute
@@ -219,6 +278,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/apply': {
@@ -270,6 +336,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WelcomeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/auditions': {
+      id: '/admin/auditions'
+      path: '/auditions'
+      fullPath: '/admin/auditions'
+      preLoaderRoute: typeof AdminAuditionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/entries': {
+      id: '/admin/entries'
+      path: '/entries'
+      fullPath: '/admin/entries'
+      preLoaderRoute: typeof AdminEntriesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/votes': {
+      id: '/admin/votes'
+      path: '/votes'
+      fullPath: '/admin/votes'
+      preLoaderRoute: typeof AdminVotesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/judge/': {
       id: '/judge/'
       path: '/judge'
@@ -315,8 +409,25 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminAuditionsRoute: typeof AdminAuditionsRoute
+  AdminEntriesRoute: typeof AdminEntriesRoute
+  AdminVotesRoute: typeof AdminVotesRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminAuditionsRoute: AdminAuditionsRoute,
+  AdminEntriesRoute: AdminEntriesRoute,
+  AdminVotesRoute: AdminVotesRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   ApplyRoute: ApplyRoute,
   CommunityRoute: CommunityRoute,
   HomeRoute: HomeRoute,
