@@ -10,6 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApplyRouteImport } from './routes/apply'
+import { Route as HomeRouteImport } from './routes/home'
+import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as SigninRouteImport } from './routes/signin'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as OnboardingRoleRouteImport } from './routes/onboarding.role'
@@ -17,6 +20,21 @@ import { Route as OnboardingRoleRouteImport } from './routes/onboarding.role'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApplyRoute = ApplyRouteImport.update({
+  id: '/apply',
+  path: '/apply',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HomeRoute = HomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RankingRoute = RankingRouteImport.update({
+  id: '/ranking',
+  path: '/ranking',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SigninRoute = SigninRouteImport.update({
@@ -37,12 +55,18 @@ const OnboardingRoleRoute = OnboardingRoleRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/apply': typeof ApplyRoute
+  '/home': typeof HomeRoute
+  '/ranking': typeof RankingRoute
   '/signin': typeof SigninRoute
   '/welcome': typeof WelcomeRoute
   '/onboarding/role': typeof OnboardingRoleRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/apply': typeof ApplyRoute
+  '/home': typeof HomeRoute
+  '/ranking': typeof RankingRoute
   '/signin': typeof SigninRoute
   '/welcome': typeof WelcomeRoute
   '/onboarding/role': typeof OnboardingRoleRoute
@@ -50,20 +74,48 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/apply': typeof ApplyRoute
+  '/home': typeof HomeRoute
+  '/ranking': typeof RankingRoute
   '/signin': typeof SigninRoute
   '/welcome': typeof WelcomeRoute
   '/onboarding/role': typeof OnboardingRoleRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/signin' | '/welcome' | '/onboarding/role'
+  fullPaths:
+    | '/'
+    | '/apply'
+    | '/home'
+    | '/ranking'
+    | '/signin'
+    | '/welcome'
+    | '/onboarding/role'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/signin' | '/welcome' | '/onboarding/role'
-  id: '__root__' | '/' | '/signin' | '/welcome' | '/onboarding/role'
+  to:
+    | '/'
+    | '/apply'
+    | '/home'
+    | '/ranking'
+    | '/signin'
+    | '/welcome'
+    | '/onboarding/role'
+  id:
+    | '__root__'
+    | '/'
+    | '/apply'
+    | '/home'
+    | '/ranking'
+    | '/signin'
+    | '/welcome'
+    | '/onboarding/role'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApplyRoute: typeof ApplyRoute
+  HomeRoute: typeof HomeRoute
+  RankingRoute: typeof RankingRoute
   SigninRoute: typeof SigninRoute
   WelcomeRoute: typeof WelcomeRoute
   OnboardingRoleRoute: typeof OnboardingRoleRoute
@@ -76,6 +128,27 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/apply': {
+      id: '/apply'
+      path: '/apply'
+      fullPath: '/apply'
+      preLoaderRoute: typeof ApplyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/home': {
+      id: '/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ranking': {
+      id: '/ranking'
+      path: '/ranking'
+      fullPath: '/ranking'
+      preLoaderRoute: typeof RankingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/signin': {
@@ -104,6 +177,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApplyRoute: ApplyRoute,
+  HomeRoute: HomeRoute,
+  RankingRoute: RankingRoute,
   SigninRoute: SigninRoute,
   WelcomeRoute: WelcomeRoute,
   OnboardingRoleRoute: OnboardingRoleRoute,
