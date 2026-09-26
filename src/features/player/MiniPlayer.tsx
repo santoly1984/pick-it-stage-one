@@ -27,7 +27,7 @@ export function MiniPlayer() {
             loading="lazy"
             width={48}
             height={48}
-            className="size-12 shrink-0 rounded-md object-cover"
+            className="size-12 shrink-0 rounded-xl object-cover"
           />
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold">{current.title}</p>

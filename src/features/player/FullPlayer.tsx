@@ -47,7 +47,7 @@ export function FullPlayer() {
         <h2 className="truncate text-xl font-bold">{current.title}</h2>
         <p className="truncate text-sm text-muted-foreground">{current.artistName}</p>
         {liveRank && (
-          <p className="mt-2 inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs">
+          <p className="mt-2 inline-flex items-center gap-2 rounded-full bg-surface px-3 py-1.5 text-xs font-medium">
             실시간 {liveRank.rank}위
             <RankChange change={liveRank.rankChange} rank={liveRank.rank} previousRank={liveRank.previousRank} />
           </p>

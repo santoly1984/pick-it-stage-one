@@ -124,7 +124,7 @@ export function VoteSheetProvider({ children }: { children: ReactNode }) {
                 ))}
               </div>
 
-              <div className="flex items-center justify-between rounded-xl border border-border bg-surface-2 p-3">
+              <div className="flex items-center justify-between rounded-2xl bg-surface-2 p-3">
                 <span className="text-sm text-muted-foreground">수량</span>
                 <div className="flex items-center gap-4">
                   <Button
@@ -155,7 +155,7 @@ export function VoteSheetProvider({ children }: { children: ReactNode }) {
                 </Button>
               ) : (
                 <div className="space-y-3">
-                  <div className="rounded-xl border border-border bg-surface-2 p-4 text-sm">
+                  <div className="rounded-2xl bg-surface-2 p-4 text-sm">
                     <p>
                       <span className="text-muted-foreground">대상 </span>
                       {target?.artistName}
@@ -180,7 +180,7 @@ export function VoteSheetProvider({ children }: { children: ReactNode }) {
 
           {step === "done" && (
             <div className="space-y-5 py-2">
-              <div className="flex items-center gap-3 rounded-xl border border-border bg-surface-2 p-4">
+              <div className="flex items-center gap-3 rounded-2xl bg-surface-2 p-4">
                 <span className="grid size-10 place-items-center rounded-full bg-primary">
                   <Check className="size-5" />
                 </span>

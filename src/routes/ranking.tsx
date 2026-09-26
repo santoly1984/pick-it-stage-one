@@ -31,11 +31,11 @@ function RankingPage() {
     <div className="min-h-screen">
       <PageHeader
         title="랭킹"
-        subtitle="PICK IT 2026 시즌 1 · 2차 라운드"
+        subtitle="시즌 1 · 군 장병 음악 오디션 · 2차 라운드"
         {...(snapshot?.published ? { right: <UpdatedAt iso={snapshot.updatedAt} /> } : {})}
       />
 
-      <div className="space-y-4 px-5 py-4">
+      <div className="space-y-4 px-5 pb-8 pt-4">
         <Tabs value={kind} onValueChange={(v) => setKind(v as RankingKind)}>
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="live-vote">실시간 투표</TabsTrigger>
@@ -49,8 +49,8 @@ function RankingPage() {
               key={n}
               type="button"
               onClick={() => setLimit(n)}
-              className={`rounded-full border px-3 py-1.5 text-xs ${
-                limit === n ? "border-primary bg-primary/20" : "border-border text-muted-foreground"
+              className={`rounded-full px-4 py-2 text-sm font-semibold ${
+                limit === n ? "bg-foreground text-background" : "bg-surface text-muted-foreground"
               }`}
             >
               TOP {n}
@@ -58,7 +58,7 @@ function RankingPage() {
           ))}
         </div>
 
-        <p className="flex items-start gap-2 rounded-lg border border-border bg-surface p-3 text-xs text-muted-foreground">
+        <p className="flex items-start gap-2 rounded-xl bg-surface px-4 py-3 text-xs leading-relaxed text-muted-foreground">
           <Info className="mt-0.5 size-3.5 shrink-0" />
           {kind === "live-vote"
             ? "실시간 투표 순위는 팬 투표만 반영한 잠정 순위입니다."
