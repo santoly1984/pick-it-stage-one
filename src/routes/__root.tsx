@@ -16,6 +16,7 @@ import { MiniPlayer } from "@/features/player/MiniPlayer";
 import { VoteSheetProvider } from "@/features/voting/VoteSheetProvider";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { Toaster } from "@/components/ui/sonner";
+import { hydrateSession } from "@/stores/session";
 
 function NotFoundComponent() {
   return (
@@ -117,6 +118,9 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  useEffect(() => {
+    hydrateSession();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

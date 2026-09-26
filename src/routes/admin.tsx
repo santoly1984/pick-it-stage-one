@@ -1,12 +1,13 @@
 import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 import { ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { RoleGate } from "@/components/auth/RoleGate";
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
 });
 
-const TABS = [
+const TABS: { to: string; label: string; exact?: boolean }[] = [
   { to: "/admin", label: "대시보드", exact: true },
   { to: "/admin/auditions", label: "오디션" },
   { to: "/admin/entries", label: "참가자" },
@@ -16,13 +17,21 @@ const TABS = [
   { to: "/admin/lyrics", label: "가사" },
   { to: "/admin/users", label: "사용자" },
   { to: "/admin/audit", label: "감사로그" },
-] as const;
+];
 
 /**
  * ADMIN AREA — the only place where score breakdowns may be rendered.
  * Real permission checks belong on the server in a later phase.
  */
 function AdminLayout() {
+  return (
+    <RoleGate role="admin">
+      <AdminShell />
+    </RoleGate>
+  );
+}
+
+function AdminShell() {
   const { pathname } = useLocation();
 
   return (

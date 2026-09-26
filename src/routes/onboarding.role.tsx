@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Check, Gavel, Mic2, ShieldCheck, Users } from "lucide-react";
+import { Check, Mic2, Users } from "lucide-react";
+import { DEMO_ACCOUNTS, setSession } from "@/stores/session";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { cn } from "@/lib/utils";
 import type { UserRole } from "@/types";
@@ -20,8 +21,6 @@ export const Route = createFileRoute("/onboarding/role")({
 const ROLES: { role: UserRole; title: string; desc: string; icon: typeof Users }[] = [
   { role: "fan", title: "팬", desc: "무대를 듣고 투표로 응원합니다.", icon: Users },
   { role: "challenger", title: "참가자", desc: "오디션에 지원하고 내 무대를 올립니다.", icon: Mic2 },
-  { role: "judge", title: "심사위원", desc: "배정된 라운드를 평가합니다. 별도 권한이 필요합니다.", icon: Gavel },
-  { role: "admin", title: "운영자", desc: "오디션 운영과 결과 확정을 담당합니다.", icon: ShieldCheck },
 ];
 
 function RoleOnboarding() {
@@ -29,31 +28,21 @@ function RoleOnboarding() {
   const [selected, setSelected] = useState<UserRole[]>(["fan"]);
 
   const toggle = (role: UserRole) => {
-    // Fan + Challenger can be held together; judge/admin are exclusive.
-    if (role === "judge" || role === "admin") {
-      setSelected([role]);
-      return;
-    }
+    // Fan + Challenger can be held together. Judge/Admin are never self-selected.
     setSelected((prev) => {
       const base = prev.filter((r) => r === "fan" || r === "challenger");
       return base.includes(role) ? (base.filter((r) => r !== role) as UserRole[]) : [...base, role];
     });
   };
 
-  const destination = selected.includes("admin")
-    ? "/admin"
-    : selected.includes("judge")
-      ? "/judge"
-      : selected.includes("challenger")
-        ? "/apply"
-        : "/home";
+  const destination = selected.includes("challenger") ? "/apply" : "/home";
 
   return (
     <div className="min-h-screen">
       <PageHeader title="어떻게 참여하시겠어요?" backTo="/signin" />
       <div className="space-y-6 px-5 py-6">
         <p className="text-sm text-muted-foreground">
-          팬과 참가자는 함께 선택할 수 있습니다. 심사위원과 운영자는 별도 권한 계정입니다.
+          팬과 참가자는 함께 선택할 수 있습니다. 심사위원·운영자 계정은 운영팀이 별도로 발급합니다.
         </p>
 
         <div className="space-y-3">
@@ -85,7 +74,10 @@ function RoleOnboarding() {
         <button
           type="button"
           disabled={!selected.length}
-          onClick={() => navigate({ to: destination })}
+          onClick={() => {
+            setSession(selected.includes("challenger") ? DEMO_ACCOUNTS.challenger : DEMO_ACCOUNTS.fan);
+            navigate({ to: destination });
+          }}
           className="h-12 w-full rounded-xl bg-primary text-sm font-semibold disabled:opacity-40"
         >
           계속하기

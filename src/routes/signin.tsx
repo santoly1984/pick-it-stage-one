@@ -52,7 +52,10 @@ function SignIn() {
           계속 진행하면 이용약관과 개인정보 처리방침에 동의하게 됩니다.
         </p>
 
-        <div className="pt-6 text-center">
+        <div className="space-y-3 pt-6 text-center">
+          <Link to="/demo/roles" className="block text-xs text-muted-foreground underline underline-offset-4">
+            검수용 데모 역할 전환 (개발·QA 전용)
+          </Link>
           <Link to="/home" className="text-sm text-accent underline-offset-4 hover:underline">
             로그인 없이 둘러보기
           </Link>
