@@ -19,8 +19,13 @@ import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as SigninRouteImport } from './routes/signin'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminAuditRouteImport } from './routes/admin.audit'
 import { Route as AdminAuditionsRouteImport } from './routes/admin.auditions'
 import { Route as AdminEntriesRouteImport } from './routes/admin.entries'
+import { Route as AdminJudgingRouteImport } from './routes/admin.judging'
+import { Route as AdminLyricsRouteImport } from './routes/admin.lyrics'
+import { Route as AdminRankingRouteImport } from './routes/admin.ranking'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminVotesRouteImport } from './routes/admin.votes'
 import { Route as JudgeIndexRouteImport } from './routes/judge.index'
 import { Route as OnboardingRoleRouteImport } from './routes/onboarding.role'
@@ -79,6 +84,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAuditRoute = AdminAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminAuditionsRoute = AdminAuditionsRouteImport.update({
   id: '/auditions',
   path: '/auditions',
@@ -87,6 +97,26 @@ const AdminAuditionsRoute = AdminAuditionsRouteImport.update({
 const AdminEntriesRoute = AdminEntriesRouteImport.update({
   id: '/entries',
   path: '/entries',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminJudgingRoute = AdminJudgingRouteImport.update({
+  id: '/judging',
+  path: '/judging',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLyricsRoute = AdminLyricsRouteImport.update({
+  id: '/lyrics',
+  path: '/lyrics',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRankingRoute = AdminRankingRouteImport.update({
+  id: '/ranking',
+  path: '/ranking',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminVotesRoute = AdminVotesRouteImport.update({
@@ -135,8 +165,13 @@ export interface FileRoutesByFullPath {
   '/ranking': typeof RankingRoute
   '/signin': typeof SigninRoute
   '/welcome': typeof WelcomeRoute
+  '/admin/audit': typeof AdminAuditRoute
   '/admin/auditions': typeof AdminAuditionsRoute
   '/admin/entries': typeof AdminEntriesRoute
+  '/admin/judging': typeof AdminJudgingRoute
+  '/admin/lyrics': typeof AdminLyricsRoute
+  '/admin/ranking': typeof AdminRankingRoute
+  '/admin/users': typeof AdminUsersRoute
   '/admin/votes': typeof AdminVotesRoute
   '/onboarding/role': typeof OnboardingRoleRoute
   '/admin/': typeof AdminIndexRoute
@@ -155,8 +190,13 @@ export interface FileRoutesByTo {
   '/ranking': typeof RankingRoute
   '/signin': typeof SigninRoute
   '/welcome': typeof WelcomeRoute
+  '/admin/audit': typeof AdminAuditRoute
   '/admin/auditions': typeof AdminAuditionsRoute
   '/admin/entries': typeof AdminEntriesRoute
+  '/admin/judging': typeof AdminJudgingRoute
+  '/admin/lyrics': typeof AdminLyricsRoute
+  '/admin/ranking': typeof AdminRankingRoute
+  '/admin/users': typeof AdminUsersRoute
   '/admin/votes': typeof AdminVotesRoute
   '/onboarding/role': typeof OnboardingRoleRoute
   '/admin': typeof AdminIndexRoute
@@ -177,8 +217,13 @@ export interface FileRoutesById {
   '/ranking': typeof RankingRoute
   '/signin': typeof SigninRoute
   '/welcome': typeof WelcomeRoute
+  '/admin/audit': typeof AdminAuditRoute
   '/admin/auditions': typeof AdminAuditionsRoute
   '/admin/entries': typeof AdminEntriesRoute
+  '/admin/judging': typeof AdminJudgingRoute
+  '/admin/lyrics': typeof AdminLyricsRoute
+  '/admin/ranking': typeof AdminRankingRoute
+  '/admin/users': typeof AdminUsersRoute
   '/admin/votes': typeof AdminVotesRoute
   '/onboarding/role': typeof OnboardingRoleRoute
   '/admin/': typeof AdminIndexRoute
@@ -200,8 +245,13 @@ export interface FileRouteTypes {
     | '/ranking'
     | '/signin'
     | '/welcome'
+    | '/admin/audit'
     | '/admin/auditions'
     | '/admin/entries'
+    | '/admin/judging'
+    | '/admin/lyrics'
+    | '/admin/ranking'
+    | '/admin/users'
     | '/admin/votes'
     | '/onboarding/role'
     | '/admin/'
@@ -220,8 +270,13 @@ export interface FileRouteTypes {
     | '/ranking'
     | '/signin'
     | '/welcome'
+    | '/admin/audit'
     | '/admin/auditions'
     | '/admin/entries'
+    | '/admin/judging'
+    | '/admin/lyrics'
+    | '/admin/ranking'
+    | '/admin/users'
     | '/admin/votes'
     | '/onboarding/role'
     | '/admin'
@@ -241,8 +296,13 @@ export interface FileRouteTypes {
     | '/ranking'
     | '/signin'
     | '/welcome'
+    | '/admin/audit'
     | '/admin/auditions'
     | '/admin/entries'
+    | '/admin/judging'
+    | '/admin/lyrics'
+    | '/admin/ranking'
+    | '/admin/users'
     | '/admin/votes'
     | '/onboarding/role'
     | '/admin/'
@@ -343,6 +403,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/audit': {
+      id: '/admin/audit'
+      path: '/audit'
+      fullPath: '/admin/audit'
+      preLoaderRoute: typeof AdminAuditRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/auditions': {
       id: '/admin/auditions'
       path: '/auditions'
@@ -355,6 +422,34 @@ declare module '@tanstack/react-router' {
       path: '/entries'
       fullPath: '/admin/entries'
       preLoaderRoute: typeof AdminEntriesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/judging': {
+      id: '/admin/judging'
+      path: '/judging'
+      fullPath: '/admin/judging'
+      preLoaderRoute: typeof AdminJudgingRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/lyrics': {
+      id: '/admin/lyrics'
+      path: '/lyrics'
+      fullPath: '/admin/lyrics'
+      preLoaderRoute: typeof AdminLyricsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/ranking': {
+      id: '/admin/ranking'
+      path: '/ranking'
+      fullPath: '/admin/ranking'
+      preLoaderRoute: typeof AdminRankingRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/votes': {
@@ -410,15 +505,25 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminAuditRoute: typeof AdminAuditRoute
   AdminAuditionsRoute: typeof AdminAuditionsRoute
   AdminEntriesRoute: typeof AdminEntriesRoute
+  AdminJudgingRoute: typeof AdminJudgingRoute
+  AdminLyricsRoute: typeof AdminLyricsRoute
+  AdminRankingRoute: typeof AdminRankingRoute
+  AdminUsersRoute: typeof AdminUsersRoute
   AdminVotesRoute: typeof AdminVotesRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAuditRoute: AdminAuditRoute,
   AdminAuditionsRoute: AdminAuditionsRoute,
   AdminEntriesRoute: AdminEntriesRoute,
+  AdminJudgingRoute: AdminJudgingRoute,
+  AdminLyricsRoute: AdminLyricsRoute,
+  AdminRankingRoute: AdminRankingRoute,
+  AdminUsersRoute: AdminUsersRoute,
   AdminVotesRoute: AdminVotesRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
