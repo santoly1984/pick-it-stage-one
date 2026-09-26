@@ -8,7 +8,7 @@ import { useSession } from "@/stores/session";
 import { RankingList } from "@/features/ranking/RankingList";
 import { UpdatedAt } from "@/features/ranking/RankChange";
 import { EntryCard } from "@/features/artist/EntryCard";
-import hero from "@/assets/hero-stage.jpg";
+import { DiscGraphic } from "@/components/brand/DiscGraphic";
 
 export const Route = createFileRoute("/home")({
   head: () => ({
@@ -57,9 +57,11 @@ function Home() {
       </section>
 
       {/* Current audition — one program among many */}
-      <section className="px-5 pt-6">
+      <section className="px-5 pt-5">
         <div className="panel overflow-hidden">
-          <img src={hero} alt="" width={1600} height={912} className="h-36 w-full object-cover" />
+          <div className="bg-surface-2 px-5 pt-4">
+            <DiscGraphic className="h-28" />
+          </div>
           <div className="p-5">
             <p className="text-xs font-medium text-primary">진행 중인 오디션</p>
             <p className="mt-1 text-lg font-bold">시즌 1 · 군 장병 음악 오디션</p>
@@ -80,7 +82,7 @@ function Home() {
         </p>
       </section>
 
-      <section className="px-5 pt-10">
+      <section className="px-5 pt-7">
         <div className="flex items-end justify-between gap-3">
           <div className="min-w-0">
             <h2 className="text-lg font-bold">실시간 TOP 10</h2>
@@ -110,7 +112,7 @@ function Home() {
         )}
       </section>
 
-      <section className="pt-10">
+      <section className="pt-7">
         <h2 className="px-5 text-lg font-bold">오늘 들어볼 무대</h2>
         <div className="mt-3 flex gap-3 overflow-x-auto px-5 pb-2">
           {entries.map((entry) => (
