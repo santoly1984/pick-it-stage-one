@@ -27,10 +27,11 @@ import type {
 export const COVERS = [cover1, cover2, cover3, cover4];
 
 const AUDIO = [
-  "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-  "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-  "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-  "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
+  // Locally generated synthetic instrumentals (ffmpeg sine chords, no third-party music).
+  // Demo only: 12 entries share 3 files; the player still switches by trackId.
+  "/audio/demo-a.mp3",
+  "/audio/demo-b.mp3",
+  "/audio/demo-c.mp3",
 ];
 
 const UNITS: { unit: string; branch: MilitaryBranch }[] = [
@@ -89,7 +90,7 @@ export const tracks: Track[] = NAMES.map((name, i) => ({
   artistName: name,
   audioUrl: AUDIO[i % AUDIO.length]!,
   coverUrl: COVERS[i % COVERS.length]!,
-  durationSec: 214 + (i % 5) * 17,
+  durationSec: [20, 18, 16][i % 3]!, // matches the local demo file
   lyricsStatus: i === 0 ? "published" : i === 1 ? "review" : "draft",
 }));
 
@@ -138,7 +139,7 @@ export const entries: Entry[] = NAMES.map((name, i) => ({
   unit: UNITS[i % UNITS.length]!.unit,
   branch: UNITS[i % UNITS.length]!.branch,
   trackId: `t_${i + 1}`,
-  interviewVideoUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+  interviewVideoUrl: "/video/interview-demo.webm",
   coverUrl: COVERS[i % COVERS.length]!,
   tagline: TAGLINES[i % TAGLINES.length]!,
   story:
@@ -178,8 +179,9 @@ export const lyricsDocs: LyricsDocument[] = [
       "그거 하나로 버틴 계절",
     ].map((text, i) => ({
       id: `l_${i + 1}`,
-      startSec: 8 + i * 12,
-      endSec: 8 + (i + 1) * 12,
+      // Demo timestamps for UI testing only — not aligned to any vocal.
+      startSec: 1 + i * 1.8,
+      endSec: 1 + (i + 1) * 1.8,
       text,
     })),
     updatedAt: "2026-09-20T02:00:00.000Z",

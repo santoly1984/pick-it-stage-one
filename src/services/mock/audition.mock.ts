@@ -27,6 +27,17 @@ export const mockAuditionService: AuditionService = {
     const e = entries.find((x) => x.id === entryId);
     return delay(e ? toPublicEntry(e) : undefined);
   },
+  async listTracks() {
+    return delay(clone(tracks));
+  },
+  async getPlayableEntries(entryIds) {
+    const rows = entryIds.flatMap((id) => {
+      const e = entries.find((x) => x.id === id);
+      const t = e && tracks.find((x) => x.id === e.trackId);
+      return e && t ? [{ entry: toPublicEntry(e), track: clone(t) }] : [];
+    });
+    return delay(rows, 40);
+  },
   async getTrack(trackId) {
     return delay(clone(tracks.find((t) => t.id === trackId)));
   },

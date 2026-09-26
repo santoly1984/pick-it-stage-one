@@ -47,12 +47,13 @@ export const mockLyricsService: LyricsService = {
       .map((t) => t.trim())
       .filter(Boolean);
     const track = tracks.find((t) => t.id === trackId);
-    const duration = track?.durationSec ?? 200;
-    const step = lines.length ? Math.max(4, Math.round((duration - 12) / lines.length)) : 0;
+    const duration = track?.durationSec ?? 20;
+    // Even spacing across the (short, demo) track — a stand-in for AI alignment.
+    const step = lines.length ? Math.max(0.5, Math.round(((duration - 2) / lines.length) * 10) / 10) : 0;
     doc.lines = lines.map((text, i) => ({
       id: `l_${i + 1}`,
-      startSec: 8 + i * step,
-      endSec: 8 + (i + 1) * step,
+      startSec: Math.round((1 + i * step) * 10) / 10,
+      endSec: Math.round((1 + (i + 1) * step) * 10) / 10,
       text,
     }));
     doc.status = "review";

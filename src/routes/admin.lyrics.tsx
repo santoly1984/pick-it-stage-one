@@ -7,8 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { lyricsService } from "@/services";
-import { tracks } from "@/mocks/data";
+import { auditionService, lyricsService } from "@/services";
 import type { LyricLine, LyricsDocument } from "@/types";
 
 export const Route = createFileRoute("/admin/lyrics")({
@@ -32,7 +31,8 @@ const STATUS_LABEL: Record<LyricsDocument["status"], string> = {
 };
 
 function AdminLyrics() {
-  const [trackId, setTrackId] = useState(tracks[0]?.id ?? "t_1");
+  const { data: tracks = [] } = useQuery({ queryKey: ["admin", "tracks"], queryFn: () => auditionService.listTracks() });
+  const [trackId, setTrackId] = useState("t_1");
   const [doc, setDoc] = useState<LyricsDocument | null>(null);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);

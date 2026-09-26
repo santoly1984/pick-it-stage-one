@@ -18,3 +18,6 @@
 - Roles use the client mock session `stores/session.ts` + `RoleGate` + `assertRole` in privileged mock services. This is NOT security. Follow-up: server-side authorization for every judge/admin endpoint. Judge/admin are never self-selected; `/demo/roles` is demo-only and must be removed with real auth.
 - Evaluation weights are per-round `EvaluationRule` (example|draft|approved); drafts live in `draftWeights` and affect ranking only after `applyEvaluationRule`. Flow: adjust → simulate → review → save draft → apply. Why: simulation must never change results; approval policy is undefined.
 - Round results follow `ResultStatus` DRAFT→JUDGING→SCORED (derived from scores) →REVIEW→CONFIRMED→PUBLISHED (explicit, `ranking.mock.ts`). Public final = frozen snapshot captured at publish; source changes create a new snapshot version and drop REVIEW/CONFIRMED. Why: provisional results must never reach public.
+
+- Demo media lives in `public/audio` / `public/video` (locally generated synthetic files); never depend on external sample-audio hosts. Why: offline-stable QA and no copyright ambiguity.
+- Player queue items carry the entry's `roundId`; votes never use a default round. Why: entries from ended rounds must not receive votes.
