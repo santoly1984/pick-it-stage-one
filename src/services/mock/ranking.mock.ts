@@ -134,8 +134,8 @@ function toPublic(rows: AdminRankingEntry[]): RankingEntry[] {
 type Explicit = "REVIEW" | "CONFIRMED" | "PUBLISHED";
 interface RoundMeta {
   explicit: Explicit | null;
-  confirmedAt?: string;
-  publishedAt?: string;
+  confirmedAt?: string | undefined;
+  publishedAt?: string | undefined;
   publishedRows?: RankingEntry[];
   changedAfterPublish: boolean;
   history: RankingSnapshotVersion[];

@@ -66,7 +66,7 @@ export const mockLyricsService: LyricsService = {
     if (lines.some((l) => !Number.isFinite(l.startSec) || l.startSec < 0)) throw new Error("시작 시간이 올바르지 않습니다.");
     if (lines.some((l, i) => i > 0 && l.startSec <= lines[i - 1]!.startSec))
       throw new Error("타임스탬프는 앞 줄보다 커야 합니다.");
-    doc.lines = lines.map((l, i) => ({ ...l, endSec: lines[i + 1]?.startSec ?? l.endSec }));
+    doc.lines = lines.map((l, i) => ({ ...l, endSec: lines[i + 1]?.startSec ?? l.endSec ?? l.startSec + 4 }));
     if (doc.status === "published") doc.status = "review";
     doc.updatedAt = nowIso();
     syncTrackStatus(doc);

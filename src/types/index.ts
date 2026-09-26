@@ -184,7 +184,7 @@ export interface EvaluationRule {
    */
   status: "example" | "draft" | "approved";
   /** Pending draft weights (simulated + reviewed). Not used for ranking until applied. */
-  draftWeights?: EvaluationWeights;
+  draftWeights?: EvaluationWeights | undefined;
   voteWeight: number; // 0..1
   judgeWeight: number;
   technicalWeight: number;
@@ -304,8 +304,8 @@ export interface RoundResultState {
   requiredScores: number;
   /** Source data changed after publish; public still shows the frozen published snapshot. */
   changedAfterPublish: boolean;
-  confirmedAt?: string;
-  publishedAt?: string;
+  confirmedAt?: string | undefined;
+  publishedAt?: string | undefined;
   currentVersion: number;
 }
 
