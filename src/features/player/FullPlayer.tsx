@@ -6,9 +6,13 @@ import { formatTime, usePlayer } from "./PlayerProvider";
 import { LyricsView } from "./LyricsView";
 import { lyricsService, DEFAULT_ROUND_ID } from "@/services";
 import { useVoteSheet } from "@/features/voting/VoteSheetProvider";
+import { useLiveRankOf } from "@/features/ranking/queries";
+import { RankChange } from "@/features/ranking/RankChange";
 
 export function FullPlayer() {
-  const { current, isPlaying, toggle, next, prev, seek, currentTime, duration } = usePlayer();
+  const { current, isPlaying, isLoading, error, suspended, toggle, next, prev, seek, currentTime, duration } =
+    usePlayer();
+  const liveRank = useLiveRankOf(current?.entryId);
   const vote = useVoteSheet();
 
   const { data: lyrics } = useQuery({
@@ -42,6 +46,17 @@ export function FullPlayer() {
       <div className="mt-6">
         <h2 className="truncate text-xl font-bold">{current.title}</h2>
         <p className="truncate text-sm text-muted-foreground">{current.artistName}</p>
+        {liveRank && (
+          <p className="mt-2 inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs">
+            실시간 {liveRank.rank}위
+            <RankChange change={liveRank.rankChange} rank={liveRank.rank} previousRank={liveRank.previousRank} />
+          </p>
+        )}
+        {(error || suspended || isLoading) && (
+          <p className={`mt-2 text-xs ${error ? "text-destructive" : "text-muted-foreground"}`} role="status">
+            {error ?? (suspended ? "인터뷰 영상 재생 중이라 음악이 일시정지됐습니다." : "불러오는 중...")}
+          </p>
+        )}
       </div>
 
       <div className="mt-5">

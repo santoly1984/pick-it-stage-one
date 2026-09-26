@@ -1,11 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronRight, Ticket } from "lucide-react";
-import { auditionService, DEFAULT_ROUND_ID, rankingService, votingService } from "@/services";
+import { auditionService, DEFAULT_ROUND_ID, votingService } from "@/services";
+import { publicRankingQuery } from "@/features/ranking/queries";
+import { useSession } from "@/stores/session";
 import { RankingList } from "@/features/ranking/RankingList";
 import { UpdatedAt } from "@/features/ranking/RankChange";
 import { EntryCard } from "@/features/artist/EntryCard";
-import { currentUser } from "@/mocks/data";
 import hero from "@/assets/hero-stage.jpg";
 
 export const Route = createFileRoute("/home")({
@@ -21,17 +22,15 @@ export const Route = createFileRoute("/home")({
 });
 
 function Home() {
-  const { data: snapshot } = useQuery({
-    queryKey: ["ranking", "public", DEFAULT_ROUND_ID, "live-vote", 10],
-    queryFn: () => rankingService.getPublicRanking({ roundId: DEFAULT_ROUND_ID, kind: "live-vote", limit: 10 }),
-  });
+  const { data: snapshot } = useQuery(publicRankingQuery("live-vote", 10));
   const { data: entries = [] } = useQuery({
     queryKey: ["entries", DEFAULT_ROUND_ID],
     queryFn: () => auditionService.listEntries({ roundId: DEFAULT_ROUND_ID }),
   });
+  const session = useSession();
   const { data: balance } = useQuery({
-    queryKey: ["balance", currentUser.id],
-    queryFn: () => votingService.getBalance(currentUser.id),
+    queryKey: ["balance", session.userId],
+    queryFn: () => votingService.getBalance(session.userId),
   });
 
   const queue = entries.map((e) => e.id);

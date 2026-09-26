@@ -5,7 +5,7 @@ import { Info } from "lucide-react";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { RankingList } from "@/features/ranking/RankingList";
 import { UpdatedAt } from "@/features/ranking/RankChange";
-import { DEFAULT_ROUND_ID, rankingService } from "@/services";
+import { publicRankingQuery } from "@/features/ranking/queries";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { RankingKind } from "@/types";
 
@@ -25,17 +25,14 @@ function RankingPage() {
   const [kind, setKind] = useState<RankingKind>("live-vote");
   const [limit, setLimit] = useState(10);
 
-  const { data: snapshot, isFetching } = useQuery({
-    queryKey: ["ranking", "public", DEFAULT_ROUND_ID, kind, limit],
-    queryFn: () => rankingService.getPublicRanking({ roundId: DEFAULT_ROUND_ID, kind, limit }),
-  });
+  const { data: snapshot, isFetching } = useQuery(publicRankingQuery(kind, limit));
 
   return (
     <div className="min-h-screen">
       <PageHeader
         title="랭킹"
         subtitle="PICK IT 2026 시즌 1 · 2차 라운드"
-        right={snapshot ? <UpdatedAt iso={snapshot.updatedAt} /> : undefined}
+        {...(snapshot?.published ? { right: <UpdatedAt iso={snapshot.updatedAt} /> } : {})}
       />
 
       <div className="space-y-4 px-5 py-4">
@@ -68,7 +65,11 @@ function RankingPage() {
             : "최종 종합 순위는 심사와 투표가 모두 반영된 확정 순위입니다. 세부 점수는 공개되지 않습니다."}
         </p>
 
-        {snapshot ? (
+        {snapshot && !snapshot.published ? (
+          <p className="panel px-4 py-10 text-center text-sm text-muted-foreground">
+            심사가 모두 완료되고 결과가 확정되면 최종 종합 순위가 공개됩니다.
+          </p>
+        ) : snapshot ? (
           <RankingList entries={snapshot.entries} />
         ) : (
           <p className="py-10 text-center text-sm text-muted-foreground">
