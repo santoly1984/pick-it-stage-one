@@ -83,12 +83,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "PICK IT — 군 장병 음악 오디션" },
-      { name: "description", content: "군 장병의 목소리를 무대에 올리는 음악 오디션과 팬 투표 플랫폼." },
+      { title: "PICK IT — 새로운 목소리를 듣고 고르는 음악 플랫폼" },
+      { name: "description", content: "다양한 음악 오디션의 무대를 발견하고, 감상하고, 직접 선택하는 음악 플랫폼." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
+      { rel: "stylesheet", href: "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" },
       {
         rel: "stylesheet",
         href: appCss,
@@ -104,7 +105,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="ko">
       <head>
         <HeadContent />
       </head>

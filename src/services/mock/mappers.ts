@@ -13,6 +13,9 @@ export function toPublicEntry(e: Entry): PublicEntry {
     ...(e.interviewVideoUrl ? { interviewVideoUrl: e.interviewVideoUrl } : {}),
     coverUrl: e.coverUrl,
     story: e.story,
+    intro: e.intro,
+    motivation: e.motivation,
+    songReason: e.songReason,
     tagline: e.tagline,
     isMine: e.challengerId === getSession().userId,
   };
