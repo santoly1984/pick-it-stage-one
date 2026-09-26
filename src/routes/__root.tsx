@@ -11,6 +11,11 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { PlayerProvider } from "@/features/player/PlayerProvider";
+import { MiniPlayer } from "@/features/player/MiniPlayer";
+import { VoteSheetProvider } from "@/features/voting/VoteSheetProvider";
+import { BottomNav } from "@/components/layout/BottomNav";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -77,14 +82,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "PICK IT — 군 장병 음악 오디션" },
+      { name: "description", content: "군 장병의 목소리를 무대에 올리는 음악 오디션과 팬 투표 플랫폼." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
@@ -119,8 +120,18 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      {/* PlayerProvider lives above <Outlet /> so audio survives navigation. */}
+      <PlayerProvider>
+        <VoteSheetProvider>
+          <div className="mx-auto min-h-screen max-w-2xl pb-28">
+            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+            <Outlet />
+          </div>
+          <MiniPlayer />
+          <BottomNav />
+          <Toaster position="top-center" />
+        </VoteSheetProvider>
+      </PlayerProvider>
     </QueryClientProvider>
   );
 }

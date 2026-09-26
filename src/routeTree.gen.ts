@@ -10,33 +10,325 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as ApplyRouteImport } from './routes/apply'
+import { Route as CommunityRouteImport } from './routes/community'
+import { Route as HomeRouteImport } from './routes/home'
+import { Route as PlayerRouteImport } from './routes/player'
+import { Route as RankingRouteImport } from './routes/ranking'
+import { Route as SigninRouteImport } from './routes/signin'
+import { Route as WelcomeRouteImport } from './routes/welcome'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminAuditRouteImport } from './routes/admin.audit'
+import { Route as AdminAuditionsRouteImport } from './routes/admin.auditions'
+import { Route as AdminEntriesRouteImport } from './routes/admin.entries'
+import { Route as AdminJudgingRouteImport } from './routes/admin.judging'
+import { Route as AdminLyricsRouteImport } from './routes/admin.lyrics'
+import { Route as AdminRankingRouteImport } from './routes/admin.ranking'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminVotesRouteImport } from './routes/admin.votes'
+import { Route as JudgeIndexRouteImport } from './routes/judge.index'
+import { Route as OnboardingRoleRouteImport } from './routes/onboarding.role'
+import { Route as ArtistIdIndexRouteImport } from './routes/artist.$id.index'
+import { Route as ArtistIdStoryRouteImport } from './routes/artist.$id.story'
+import { Route as JudgeRoundIdRouteImport } from './routes/judge.round.$id'
+import { Route as JudgeScoreEntryIdRouteImport } from './routes/judge.score.$entryId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApplyRoute = ApplyRouteImport.update({
+  id: '/apply',
+  path: '/apply',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunityRoute = CommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HomeRoute = HomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlayerRoute = PlayerRouteImport.update({
+  id: '/player',
+  path: '/player',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RankingRoute = RankingRouteImport.update({
+  id: '/ranking',
+  path: '/ranking',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SigninRoute = SigninRouteImport.update({
+  id: '/signin',
+  path: '/signin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WelcomeRoute = WelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAuditRoute = AdminAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAuditionsRoute = AdminAuditionsRouteImport.update({
+  id: '/auditions',
+  path: '/auditions',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEntriesRoute = AdminEntriesRouteImport.update({
+  id: '/entries',
+  path: '/entries',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminJudgingRoute = AdminJudgingRouteImport.update({
+  id: '/judging',
+  path: '/judging',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLyricsRoute = AdminLyricsRouteImport.update({
+  id: '/lyrics',
+  path: '/lyrics',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRankingRoute = AdminRankingRouteImport.update({
+  id: '/ranking',
+  path: '/ranking',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminVotesRoute = AdminVotesRouteImport.update({
+  id: '/votes',
+  path: '/votes',
+  getParentRoute: () => AdminRoute,
+} as any)
+const JudgeIndexRoute = JudgeIndexRouteImport.update({
+  id: '/judge/',
+  path: '/judge/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoleRoute = OnboardingRoleRouteImport.update({
+  id: '/onboarding/role',
+  path: '/onboarding/role',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArtistIdIndexRoute = ArtistIdIndexRouteImport.update({
+  id: '/artist/$id/',
+  path: '/artist/$id/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArtistIdStoryRoute = ArtistIdStoryRouteImport.update({
+  id: '/artist/$id/story',
+  path: '/artist/$id/story',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JudgeRoundIdRoute = JudgeRoundIdRouteImport.update({
+  id: '/judge/round/$id',
+  path: '/judge/round/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JudgeScoreEntryIdRoute = JudgeScoreEntryIdRouteImport.update({
+  id: '/judge/score/$entryId',
+  path: '/judge/score/$entryId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/apply': typeof ApplyRoute
+  '/community': typeof CommunityRoute
+  '/home': typeof HomeRoute
+  '/player': typeof PlayerRoute
+  '/ranking': typeof RankingRoute
+  '/signin': typeof SigninRoute
+  '/welcome': typeof WelcomeRoute
+  '/admin/audit': typeof AdminAuditRoute
+  '/admin/auditions': typeof AdminAuditionsRoute
+  '/admin/entries': typeof AdminEntriesRoute
+  '/admin/judging': typeof AdminJudgingRoute
+  '/admin/lyrics': typeof AdminLyricsRoute
+  '/admin/ranking': typeof AdminRankingRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/votes': typeof AdminVotesRoute
+  '/onboarding/role': typeof OnboardingRoleRoute
+  '/admin/': typeof AdminIndexRoute
+  '/judge/': typeof JudgeIndexRoute
+  '/artist/$id/story': typeof ArtistIdStoryRoute
+  '/judge/round/$id': typeof JudgeRoundIdRoute
+  '/judge/score/$entryId': typeof JudgeScoreEntryIdRoute
+  '/artist/$id/': typeof ArtistIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/apply': typeof ApplyRoute
+  '/community': typeof CommunityRoute
+  '/home': typeof HomeRoute
+  '/player': typeof PlayerRoute
+  '/ranking': typeof RankingRoute
+  '/signin': typeof SigninRoute
+  '/welcome': typeof WelcomeRoute
+  '/admin/audit': typeof AdminAuditRoute
+  '/admin/auditions': typeof AdminAuditionsRoute
+  '/admin/entries': typeof AdminEntriesRoute
+  '/admin/judging': typeof AdminJudgingRoute
+  '/admin/lyrics': typeof AdminLyricsRoute
+  '/admin/ranking': typeof AdminRankingRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/votes': typeof AdminVotesRoute
+  '/onboarding/role': typeof OnboardingRoleRoute
+  '/admin': typeof AdminIndexRoute
+  '/judge': typeof JudgeIndexRoute
+  '/artist/$id/story': typeof ArtistIdStoryRoute
+  '/judge/round/$id': typeof JudgeRoundIdRoute
+  '/judge/score/$entryId': typeof JudgeScoreEntryIdRoute
+  '/artist/$id': typeof ArtistIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/apply': typeof ApplyRoute
+  '/community': typeof CommunityRoute
+  '/home': typeof HomeRoute
+  '/player': typeof PlayerRoute
+  '/ranking': typeof RankingRoute
+  '/signin': typeof SigninRoute
+  '/welcome': typeof WelcomeRoute
+  '/admin/audit': typeof AdminAuditRoute
+  '/admin/auditions': typeof AdminAuditionsRoute
+  '/admin/entries': typeof AdminEntriesRoute
+  '/admin/judging': typeof AdminJudgingRoute
+  '/admin/lyrics': typeof AdminLyricsRoute
+  '/admin/ranking': typeof AdminRankingRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/votes': typeof AdminVotesRoute
+  '/onboarding/role': typeof OnboardingRoleRoute
+  '/admin/': typeof AdminIndexRoute
+  '/judge/': typeof JudgeIndexRoute
+  '/artist/$id/story': typeof ArtistIdStoryRoute
+  '/judge/round/$id': typeof JudgeRoundIdRoute
+  '/judge/score/$entryId': typeof JudgeScoreEntryIdRoute
+  '/artist/$id/': typeof ArtistIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/apply'
+    | '/community'
+    | '/home'
+    | '/player'
+    | '/ranking'
+    | '/signin'
+    | '/welcome'
+    | '/admin/audit'
+    | '/admin/auditions'
+    | '/admin/entries'
+    | '/admin/judging'
+    | '/admin/lyrics'
+    | '/admin/ranking'
+    | '/admin/users'
+    | '/admin/votes'
+    | '/onboarding/role'
+    | '/admin/'
+    | '/judge/'
+    | '/artist/$id/story'
+    | '/judge/round/$id'
+    | '/judge/score/$entryId'
+    | '/artist/$id/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/apply'
+    | '/community'
+    | '/home'
+    | '/player'
+    | '/ranking'
+    | '/signin'
+    | '/welcome'
+    | '/admin/audit'
+    | '/admin/auditions'
+    | '/admin/entries'
+    | '/admin/judging'
+    | '/admin/lyrics'
+    | '/admin/ranking'
+    | '/admin/users'
+    | '/admin/votes'
+    | '/onboarding/role'
+    | '/admin'
+    | '/judge'
+    | '/artist/$id/story'
+    | '/judge/round/$id'
+    | '/judge/score/$entryId'
+    | '/artist/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/apply'
+    | '/community'
+    | '/home'
+    | '/player'
+    | '/ranking'
+    | '/signin'
+    | '/welcome'
+    | '/admin/audit'
+    | '/admin/auditions'
+    | '/admin/entries'
+    | '/admin/judging'
+    | '/admin/lyrics'
+    | '/admin/ranking'
+    | '/admin/users'
+    | '/admin/votes'
+    | '/onboarding/role'
+    | '/admin/'
+    | '/judge/'
+    | '/artist/$id/story'
+    | '/judge/round/$id'
+    | '/judge/score/$entryId'
+    | '/artist/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
+  ApplyRoute: typeof ApplyRoute
+  CommunityRoute: typeof CommunityRoute
+  HomeRoute: typeof HomeRoute
+  PlayerRoute: typeof PlayerRoute
+  RankingRoute: typeof RankingRoute
+  SigninRoute: typeof SigninRoute
+  WelcomeRoute: typeof WelcomeRoute
+  OnboardingRoleRoute: typeof OnboardingRoleRoute
+  JudgeIndexRoute: typeof JudgeIndexRoute
+  ArtistIdStoryRoute: typeof ArtistIdStoryRoute
+  JudgeRoundIdRoute: typeof JudgeRoundIdRoute
+  JudgeScoreEntryIdRoute: typeof JudgeScoreEntryIdRoute
+  ArtistIdIndexRoute: typeof ArtistIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +340,212 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/apply': {
+      id: '/apply'
+      path: '/apply'
+      fullPath: '/apply'
+      preLoaderRoute: typeof ApplyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/community': {
+      id: '/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof CommunityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/home': {
+      id: '/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/player': {
+      id: '/player'
+      path: '/player'
+      fullPath: '/player'
+      preLoaderRoute: typeof PlayerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ranking': {
+      id: '/ranking'
+      path: '/ranking'
+      fullPath: '/ranking'
+      preLoaderRoute: typeof RankingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signin': {
+      id: '/signin'
+      path: '/signin'
+      fullPath: '/signin'
+      preLoaderRoute: typeof SigninRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/welcome': {
+      id: '/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof WelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/audit': {
+      id: '/admin/audit'
+      path: '/audit'
+      fullPath: '/admin/audit'
+      preLoaderRoute: typeof AdminAuditRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/auditions': {
+      id: '/admin/auditions'
+      path: '/auditions'
+      fullPath: '/admin/auditions'
+      preLoaderRoute: typeof AdminAuditionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/entries': {
+      id: '/admin/entries'
+      path: '/entries'
+      fullPath: '/admin/entries'
+      preLoaderRoute: typeof AdminEntriesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/judging': {
+      id: '/admin/judging'
+      path: '/judging'
+      fullPath: '/admin/judging'
+      preLoaderRoute: typeof AdminJudgingRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/lyrics': {
+      id: '/admin/lyrics'
+      path: '/lyrics'
+      fullPath: '/admin/lyrics'
+      preLoaderRoute: typeof AdminLyricsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/ranking': {
+      id: '/admin/ranking'
+      path: '/ranking'
+      fullPath: '/admin/ranking'
+      preLoaderRoute: typeof AdminRankingRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/votes': {
+      id: '/admin/votes'
+      path: '/votes'
+      fullPath: '/admin/votes'
+      preLoaderRoute: typeof AdminVotesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/judge/': {
+      id: '/judge/'
+      path: '/judge'
+      fullPath: '/judge/'
+      preLoaderRoute: typeof JudgeIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/role': {
+      id: '/onboarding/role'
+      path: '/onboarding/role'
+      fullPath: '/onboarding/role'
+      preLoaderRoute: typeof OnboardingRoleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/artist/$id/': {
+      id: '/artist/$id/'
+      path: '/artist/$id'
+      fullPath: '/artist/$id/'
+      preLoaderRoute: typeof ArtistIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/artist/$id/story': {
+      id: '/artist/$id/story'
+      path: '/artist/$id/story'
+      fullPath: '/artist/$id/story'
+      preLoaderRoute: typeof ArtistIdStoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/judge/round/$id': {
+      id: '/judge/round/$id'
+      path: '/judge/round/$id'
+      fullPath: '/judge/round/$id'
+      preLoaderRoute: typeof JudgeRoundIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/judge/score/$entryId': {
+      id: '/judge/score/$entryId'
+      path: '/judge/score/$entryId'
+      fullPath: '/judge/score/$entryId'
+      preLoaderRoute: typeof JudgeScoreEntryIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AdminRouteChildren {
+  AdminAuditRoute: typeof AdminAuditRoute
+  AdminAuditionsRoute: typeof AdminAuditionsRoute
+  AdminEntriesRoute: typeof AdminEntriesRoute
+  AdminJudgingRoute: typeof AdminJudgingRoute
+  AdminLyricsRoute: typeof AdminLyricsRoute
+  AdminRankingRoute: typeof AdminRankingRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminVotesRoute: typeof AdminVotesRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminAuditRoute: AdminAuditRoute,
+  AdminAuditionsRoute: AdminAuditionsRoute,
+  AdminEntriesRoute: AdminEntriesRoute,
+  AdminJudgingRoute: AdminJudgingRoute,
+  AdminLyricsRoute: AdminLyricsRoute,
+  AdminRankingRoute: AdminRankingRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  AdminVotesRoute: AdminVotesRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
+  ApplyRoute: ApplyRoute,
+  CommunityRoute: CommunityRoute,
+  HomeRoute: HomeRoute,
+  PlayerRoute: PlayerRoute,
+  RankingRoute: RankingRoute,
+  SigninRoute: SigninRoute,
+  WelcomeRoute: WelcomeRoute,
+  OnboardingRoleRoute: OnboardingRoleRoute,
+  JudgeIndexRoute: JudgeIndexRoute,
+  ArtistIdStoryRoute: ArtistIdStoryRoute,
+  JudgeRoundIdRoute: JudgeRoundIdRoute,
+  JudgeScoreEntryIdRoute: JudgeScoreEntryIdRoute,
+  ArtistIdIndexRoute: ArtistIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
