@@ -20,7 +20,7 @@ function SignIn() {
   const go = () => navigate({ to: "/onboarding/role" });
 
   return (
-    <div className="min-h-screen">
+    <div className="theme-light min-h-screen">
       <PageHeader title="로그인" backTo="/welcome" />
       <div className="space-y-6 px-6 py-10">
         <div>
