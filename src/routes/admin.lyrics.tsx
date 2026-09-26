@@ -32,7 +32,7 @@ const STATUS_LABEL: Record<LyricsDocument["status"], string> = {
 };
 
 function AdminLyrics() {
-  const [trackId, setTrackId] = useState(tracks[0].id);
+  const [trackId, setTrackId] = useState(tracks[0]?.id ?? "t_1");
   const [doc, setDoc] = useState<LyricsDocument | null>(null);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);

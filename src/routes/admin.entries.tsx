@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { auditionService, DEFAULT_AUDITION_ID } from "@/services";
+import { adminService, DEFAULT_AUDITION_ID } from "@/services";
 import { AdminSection } from "@/features/admin/AdminSection";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -18,8 +18,8 @@ export const Route = createFileRoute("/admin/entries")({
 
 function AdminEntries() {
   const { data: entries = [] } = useQuery({
-    queryKey: ["entries", "all"],
-    queryFn: () => auditionService.listEntries({ auditionId: DEFAULT_AUDITION_ID }),
+    queryKey: ["admin", "entries", DEFAULT_AUDITION_ID],
+    queryFn: () => adminService.listEntries(DEFAULT_AUDITION_ID),
   });
 
   return (
@@ -29,7 +29,7 @@ function AdminEntries() {
           <TableHeader>
             <TableRow>
               <TableHead>활동명</TableHead>
-              <TableHead>부대</TableHead>
+              <TableHead>부대 (내부)</TableHead>
               <TableHead>라운드</TableHead>
               <TableHead>접수일</TableHead>
             </TableRow>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { adminService, DEFAULT_AUDITION_ID, DEFAULT_ROUND_ID } from "@/services";
+import { adminService, DEFAULT_ROUND_ID } from "@/services";
 import { AdminSection, InternalOnly } from "@/features/admin/AdminSection";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -25,8 +25,8 @@ function AdminJudging() {
     queryFn: () => adminService.listEntryJudgingProgress(DEFAULT_ROUND_ID),
   });
   const { data: rule } = useQuery({
-    queryKey: ["admin", "rule", DEFAULT_AUDITION_ID],
-    queryFn: () => adminService.getEvaluationRule(DEFAULT_AUDITION_ID),
+    queryKey: ["admin", "rule", DEFAULT_ROUND_ID],
+    queryFn: () => adminService.getEvaluationRule(DEFAULT_ROUND_ID),
   });
   const { data: scores = [] } = useQuery({
     queryKey: ["admin", "judge-scores", selected],

@@ -24,7 +24,7 @@ function JudgeHome() {
 
   return (
     <div className="min-h-screen">
-      <PageHeader title="심사 대시보드" subtitle="심사위원 A" />
+      <PageHeader title="심사 대시보드" subtitle="심사위원 A · 본인 평가만 표시" />
       <div className="space-y-3 px-5 py-5">
         <p className="text-xs text-muted-foreground">배정된 라운드</p>
         {rounds.map((round) => (

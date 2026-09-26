@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Check, ChevronRight } from "lucide-react";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { DEFAULT_JUDGE_ID, judgingService } from "@/services";
-import { judgeScores } from "@/mocks/data";
 
 export const Route = createFileRoute("/judge/round/$id")({
   head: () => ({
@@ -24,8 +23,11 @@ function JudgeRound() {
     queryFn: () => judgingService.listAssignedEntries(DEFAULT_JUDGE_ID, id),
   });
 
-  const isDone = (entryId: string) =>
-    judgeScores.some((s) => s.entryId === entryId && s.judgeId === DEFAULT_JUDGE_ID && s.status === "submitted");
+  const { data: myScores = [] } = useQuery({
+    queryKey: ["judge", "my-scores", id],
+    queryFn: () => judgingService.listMyScores(DEFAULT_JUDGE_ID, id),
+  });
+  const isDone = (entryId: string) => myScores.some((s) => s.entryId === entryId && s.status === "submitted");
 
   const doneCount = entries.filter((e) => isDone(e.id)).length;
 
@@ -50,7 +52,7 @@ function JudgeRound() {
               />
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold">{entry.artistName}</p>
-                <p className="truncate text-xs text-muted-foreground">{entry.unit}</p>
+                <p className="truncate text-xs text-muted-foreground">{entry.branch}</p>
               </div>
               {isDone(entry.id) ? (
                 <span className="inline-flex shrink-0 items-center gap-1 text-xs text-up">
