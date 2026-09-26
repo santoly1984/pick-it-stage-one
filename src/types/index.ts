@@ -178,8 +178,13 @@ export interface EvaluationRule {
   id: string;
   auditionId: string;
   roundId: string;
-  /** "example" = placeholder mock values; "draft" = saved by admin, not yet approved. */
+  /**
+   * "example" = placeholder mock values; "draft" = saved by admin, not yet applied;
+   * "approved" = applied to the round in the mock (NOT an operating-policy approval).
+   */
   status: "example" | "draft" | "approved";
+  /** Pending draft weights (simulated + reviewed). Not used for ranking until applied. */
+  draftWeights?: EvaluationWeights;
   voteWeight: number; // 0..1
   judgeWeight: number;
   technicalWeight: number;
@@ -279,4 +284,36 @@ export interface EntryJudgingProgress {
   artistName: string;
   submittedCount: number;
   judgeCount: number;
+}
+
+/* ------------------------------ result lifecycle ----------------------------- */
+
+/**
+ * Round result lifecycle (admin-only).
+ * DRAFT: no judge scores · JUDGING: partial (provisional) · SCORED: all submitted
+ * REVIEW: admin reviewing · CONFIRMED: result locked · PUBLISHED: public final visible.
+ */
+export type ResultStatus = "DRAFT" | "JUDGING" | "SCORED" | "REVIEW" | "CONFIRMED" | "PUBLISHED";
+
+export interface RoundResultState {
+  roundId: string;
+  status: ResultStatus;
+  /** true while any judge score is missing — admin ranking is provisional. */
+  provisional: boolean;
+  submittedScores: number;
+  requiredScores: number;
+  /** Source data changed after publish; public still shows the frozen published snapshot. */
+  changedAfterPublish: boolean;
+  confirmedAt?: string;
+  publishedAt?: string;
+  currentVersion: number;
+}
+
+export interface RankingSnapshotVersion {
+  version: number;
+  roundId: string;
+  createdAt: string;
+  reason: string;
+  provisional: boolean;
+  rows: { entryId: string; artistName: string; rank: number }[];
 }
