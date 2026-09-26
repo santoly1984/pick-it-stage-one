@@ -1,13 +1,19 @@
 import type { AdminService } from "@/services/contracts";
-import { auditLogs, entries, evaluationRule, judgeScores, users } from "@/mocks/data";
-import type { EvaluationRule } from "@/types";
+import { auditLogs, entries, evaluationRules, judgeScores, users } from "@/mocks/data";
+import { assertRole } from "@/stores/session";
 import { clone, delay, nowIso } from "./util";
+import { computeRanking } from "./ranking.mock";
 
-let rule: EvaluationRule = { ...evaluationRule };
 const JUDGES = users.filter((u) => u.roles.includes("judge"));
 
+/** ADMIN-ONLY adapter. Every call checks the mock session role. */
 export const mockAdminService: AdminService = {
+  async listEntries(auditionId) {
+    assertRole("admin");
+    return delay(clone(entries.filter((e) => e.auditionId === auditionId)));
+  },
   async listJudgingProgress(roundId) {
+    assertRole("admin");
     const pool = entries.filter((e) => e.roundId === roundId);
     return delay(
       JUDGES.map((j) => ({
@@ -22,6 +28,7 @@ export const mockAdminService: AdminService = {
     );
   },
   async listEntryJudgingProgress(roundId) {
+    assertRole("admin");
     return delay(
       entries
         .filter((e) => e.roundId === roundId)
@@ -34,31 +41,54 @@ export const mockAdminService: AdminService = {
     );
   },
   async listJudgeScores(entryId) {
+    assertRole("admin");
     return delay(clone(judgeScores.filter((s) => s.entryId === entryId)));
   },
-  async getEvaluationRule() {
+  async getEvaluationRule(roundId) {
+    assertRole("admin");
+    const rule = evaluationRules.find((r) => r.roundId === roundId);
+    if (!rule) throw new Error(`No evaluation rule for round ${roundId}`);
     return delay(clone(rule));
   },
-  async updateEvaluationRule(next) {
-    rule = { ...next, updatedAt: nowIso() };
+  async simulateEvaluationRule(roundId, weights) {
+    assertRole("admin");
+    const current = computeRanking(roundId, "final");
+    const simulated = computeRanking(roundId, "final", weights);
+    return delay(
+      simulated.map((row) => ({
+        entryId: row.entryId,
+        artistName: row.artistName,
+        simulatedRank: row.rank,
+        currentRank: current.find((c) => c.entryId === row.entryId)?.rank ?? row.rank,
+      })),
+    );
+  },
+  async saveEvaluationRuleDraft(roundId, weights) {
+    assertRole("admin");
+    const rule = evaluationRules.find((r) => r.roundId === roundId);
+    if (!rule) throw new Error(`No evaluation rule for round ${roundId}`);
+    Object.assign(rule, weights, { status: "draft", updatedAt: nowIso() });
     auditLogs.unshift({
       id: `al_${Date.now()}`,
       actorId: "u_admin",
       actorName: "운영자",
-      action: "evaluation_rule.update",
+      action: "evaluation_rule.save_draft",
       target: rule.id,
-      meta: { voteWeight: rule.voteWeight, judgeWeight: rule.judgeWeight, technicalWeight: rule.technicalWeight },
+      meta: { ...weights },
       createdAt: nowIso(),
     });
     return delay(clone(rule), 350);
   },
   async listUsers() {
+    assertRole("admin");
     return delay(clone(users));
   },
   async listAuditLogs() {
+    assertRole("admin");
     return delay(clone(auditLogs));
   },
   async listVoteStats(roundId) {
+    assertRole("admin");
     return delay(
       entries
         .filter((e) => e.roundId === roundId)

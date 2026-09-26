@@ -1,5 +1,6 @@
 import type { CommunityService, NotificationService } from "@/services/contracts";
 import { comments, currentUser, entries, notifications } from "@/mocks/data";
+import { getSession } from "@/stores/session";
 import type { Comment } from "@/types";
 import { clone, delay, nowIso, uid } from "./util";
 
@@ -15,10 +16,10 @@ export const mockCommunityService: CommunityService = {
       entryId,
       authorId: currentUser.id,
       authorName: currentUser.displayName,
-      authorRole: currentUser.roles.includes("challenger") ? "challenger" : "fan",
-      isVerifiedChallenger: entry?.challengerId === currentUser.id,
+      authorRole: getSession().roles.includes("challenger") ? "challenger" : "fan",
+      isVerifiedChallenger: entry?.challengerId === getSession().userId,
       body,
-      parentId,
+      ...(parentId ? { parentId } : {}),
       createdAt: nowIso(),
     };
     comments.push(comment);
