@@ -14,9 +14,9 @@ export function RankingList({ entries, className }: { entries: RankingEntry[]; c
   const queue = entries.map((e) => e.entryId);
 
   return (
-    <ul className={cn("divide-y divide-border", className)}>
+    <ul className={cn("space-y-1", className)}>
       {entries.map((e) => (
-        <li key={e.entryId} className="grid grid-cols-[2.25rem_auto_minmax(0,1fr)_auto] items-center gap-3 py-3">
+        <li key={e.entryId} className="grid grid-cols-[2.25rem_auto_minmax(0,1fr)_auto] items-center gap-3 py-2.5">
           <div className="text-center">
             <p className="text-lg font-bold tabular-nums leading-none">{e.rank}</p>
             <RankChange change={e.rankChange} rank={e.rank} previousRank={e.previousRank} className="mt-1" />
@@ -27,17 +27,17 @@ export function RankingList({ entries, className }: { entries: RankingEntry[]; c
             loading="lazy"
             width={48}
             height={48}
-            className="size-12 shrink-0 rounded-md object-cover"
+            className="size-12 shrink-0 rounded-xl object-cover"
           />
           <Link to="/artist/$id" params={{ id: e.entryId }} className="min-w-0">
-            <p className="truncate text-sm font-semibold">{e.artistName}</p>
+            <p className="truncate text-[15px] font-semibold">{e.artistName}</p>
             <p className="truncate text-xs text-muted-foreground">{e.branch}</p>
           </Link>
           <button
             type="button"
             aria-label={`${e.artistName} 재생`}
             onClick={() => play(e.entryId, queue)}
-            className="grid size-9 shrink-0 place-items-center rounded-full border border-border"
+            className="grid size-10 shrink-0 place-items-center rounded-full bg-surface text-primary"
           >
             <Play className="size-4" />
           </button>

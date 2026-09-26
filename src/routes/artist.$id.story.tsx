@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { auditionService } from "@/services";
+import { StoryFlow } from "@/features/artist/StoryFlow";
 
 export const Route = createFileRoute("/artist/$id/story")({
   head: () => ({
@@ -25,10 +26,13 @@ function ArtistStory() {
       <article className="px-5 py-6">
         {entry ? (
           <>
-            <h2 className="text-xl font-bold leading-snug">{entry.tagline}</h2>
-            <p className="mt-1 text-xs text-muted-foreground">{entry.branch}</p>
-            <div className="accent-rule my-5" />
-            <p className="whitespace-pre-line text-[15px] leading-8">{entry.story}</p>
+            <h2 className="text-2xl font-bold leading-snug tracking-tight">{entry.tagline}</h2>
+            <p className="mt-1 text-sm text-muted-foreground">{entry.branch}</p>
+            <div className="mt-8">
+              <StoryFlow entry={entry} />
+            </div>
+            <h3 className="mt-10 text-sm font-semibold text-muted-foreground">전체 이야기</h3>
+            <p className="mt-2 whitespace-pre-line text-[15px] leading-8">{entry.story}</p>
           </>
         ) : (
           <p className="text-sm text-muted-foreground">불러오는 중...</p>

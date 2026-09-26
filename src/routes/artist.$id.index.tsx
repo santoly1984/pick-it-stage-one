@@ -10,6 +10,7 @@ import { CommentThread } from "@/features/community/CommentThread";
 import { Button } from "@/components/ui/button";
 import { useLiveRankOf } from "@/features/ranking/queries";
 import { RankChange } from "@/features/ranking/RankChange";
+import { StoryFlow } from "@/features/artist/StoryFlow";
 
 export const Route = createFileRoute("/artist/$id/")({
   head: () => ({
@@ -58,13 +59,12 @@ function ArtistDetail() {
           className="aspect-square w-full rounded-2xl object-cover"
         />
         {liveRank && (
-          <p className="mt-4 inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs">
+          <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-surface px-3 py-1.5 text-xs font-medium">
             실시간 {liveRank.rank}위
             <RankChange change={liveRank.rankChange} rank={liveRank.rank} previousRank={liveRank.previousRank} />
           </p>
         )}
-        <h2 className="mt-3 text-xl font-bold">{entry.tagline}</h2>
-        <div className="accent-rule mt-3" />
+        <h2 className="mt-3 text-2xl font-bold leading-snug tracking-tight">{entry.tagline}</h2>
 
         <div className="mt-5 flex gap-3">
           <Button className="flex-1" size="lg" onClick={() => play(entry.id)}>
@@ -81,15 +81,15 @@ function ArtistDetail() {
         </div>
       </section>
 
-      <section className="px-5 pb-2">
-        <h3 className="text-sm font-bold">참가자 스토리</h3>
-        <p className="mt-2 line-clamp-4 whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
-          {entry.story}
-        </p>
+      <section className="px-5 pb-2 pt-6">
+        <h3 className="text-lg font-bold">이 무대의 이야기</h3>
+        <div className="mt-4">
+          <StoryFlow entry={entry} />
+        </div>
         <Link
           to="/artist/$id/story"
           params={{ id: entry.id }}
-          className="mt-2 inline-flex items-center text-xs text-accent"
+          className="mt-4 inline-flex items-center text-sm text-muted-foreground"
         >
           전체 스토리 보기 <ChevronRight className="size-3.5" />
         </Link>
@@ -97,7 +97,7 @@ function ArtistDetail() {
 
       {entry.interviewVideoUrl && (
         <section className="px-5 py-6">
-          <h3 className="mb-2 text-sm font-bold">인터뷰 영상</h3>
+          <h3 className="mb-3 text-lg font-bold">인터뷰 영상</h3>
           <InterviewVideo src={entry.interviewVideoUrl} poster={entry.coverUrl} />
           <p className="mt-2 text-xs text-muted-foreground">영상 재생 시 음악은 자동으로 일시정지됩니다.</p>
         </section>
@@ -105,7 +105,7 @@ function ArtistDetail() {
 
       {sameBranch.length > 0 && (
         <section className="pb-6">
-          <h3 className="px-5 text-sm font-bold">같은 군의 목소리</h3>
+          <h3 className="px-5 text-lg font-bold">같은 군의 목소리</h3>
           <div className="mt-3 flex gap-3 overflow-x-auto px-5 pb-2">
             {sameBranch.map((e) => (
               <Link key={e.id} to="/artist/$id" params={{ id: e.id }} className="w-32 shrink-0">
@@ -125,7 +125,7 @@ function ArtistDetail() {
       )}
 
       <section className="px-5 pb-10">
-        <h3 className="mb-3 text-sm font-bold">응원 댓글</h3>
+        <h3 className="mb-3 text-lg font-bold">응원 댓글</h3>
         <CommentThread entryId={entry.id} />
       </section>
     </div>

@@ -6,9 +6,9 @@ export const Route = createFileRoute("/player")({
   head: () => ({
     meta: [
       { title: "플레이어 — PICK IT" },
-      { name: "description", content: "가사 싱크와 함께 장병들의 무대를 감상하세요." },
+      { name: "description", content: "가사와 함께 무대를 감상하세요." },
       { property: "og:title", content: "플레이어 — PICK IT" },
-      { property: "og:description", content: "가사 싱크와 함께 장병들의 무대를 감상하세요." },
+      { property: "og:description", content: "가사와 함께 무대를 감상하세요." },
     ],
   }),
   component: PlayerPage,

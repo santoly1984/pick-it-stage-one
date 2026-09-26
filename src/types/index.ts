@@ -66,6 +66,10 @@ export interface Entry {
   interviewVideoUrl?: string;
   coverUrl: string;
   story: string;
+  /** Story flow shown together with the music */
+  intro: string;
+  motivation: string;
+  songReason: string;
   tagline: string;
   submittedAt: string;
 }
@@ -81,6 +85,10 @@ export interface PublicEntry {
   interviewVideoUrl?: string;
   coverUrl: string;
   story: string;
+  /** Story flow shown together with the music */
+  intro: string;
+  motivation: string;
+  songReason: string;
   tagline: string;
   /** true when the signed-in user is this entry's challenger (for reply badge) */
   isMine: boolean;

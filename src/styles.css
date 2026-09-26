@@ -6,7 +6,8 @@
 
 /*
  * PICK IT design system
- * Brand: deep purple stage. #1A0B46 / #32126C / #674BFF / #EB18C8 / #F4F0FF
+ * Brand: general music discovery & pick platform. Deep purple stage,
+ * Electric Blue primary x Violet x Pink accent. #1A0B46 / #32126C / #674BFF / #EB18C8 / #F4F0FF
  * Rules: dark-first, minimal, flat surfaces, no heavy gradients.
  * Never hardcode colors in components — use these tokens.
  */
@@ -39,6 +40,7 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-ring-offset-background: var(--background);
+  --color-violet: var(--violet);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
   --color-up: var(--up);
@@ -62,7 +64,7 @@
 }
 
 :root {
-  --radius: 0.875rem;
+  --radius: 1rem;
 
   /* base */
   --background: oklch(0.173 0.0787 285);
@@ -76,7 +78,7 @@
   --popover: oklch(0.2194 0.1018 286.16);
   --popover-foreground: oklch(0.9626 0.0204 298.2);
 
-  --primary: oklch(0.5585 0.251 281.64);
+  --primary: oklch(0.6 0.23 268);
   --primary-foreground: oklch(0.9626 0.0204 298.2);
 
   --secondary: oklch(0.2969 0.1415 291.31);
@@ -91,9 +93,12 @@
   --destructive: oklch(0.62 0.22 22);
   --destructive-foreground: oklch(0.98 0.01 298);
 
-  --border: oklch(0.33 0.09 289);
+  --border: oklch(0.3 0.08 289);
   --input: oklch(0.29 0.09 289);
-  --ring: oklch(0.5585 0.251 281.64);
+  --ring: oklch(0.6 0.23 268);
+
+  /* Violet: secondary brand energy (Electric Blue x Violet) */
+  --violet: oklch(0.5585 0.251 281.64);
 
   /* rank movement */
   --up: oklch(0.78 0.17 145);
@@ -136,25 +141,15 @@
   }
 }
 
-/* Stage surface: flat panel used across cards, sheets, admin tables */
+/* Flat filled surfaces (Toss-style): no outlines, no side rules, no decoration */
 @utility panel {
   background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
 }
 
 @utility panel-2 {
   background-color: var(--color-surface-2);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-}
-
-/* Single accent line — used instead of large gradients */
-@utility accent-rule {
-  background-color: var(--color-accent);
-  height: 2px;
-  width: 2rem;
-  border-radius: 999px;
+  border-radius: var(--radius-xl);
 }
 
 @utility lyric-active {

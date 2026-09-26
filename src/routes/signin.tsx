@@ -6,9 +6,9 @@ export const Route = createFileRoute("/signin")({
   head: () => ({
     meta: [
       { title: "로그인 — PICK IT" },
-      { name: "description", content: "PICK IT에 로그인하고 장병들의 무대를 응원하세요." },
+      { name: "description", content: "PICK IT에 로그인하고 좋아하는 무대를 발견하고 응원하세요." },
       { property: "og:title", content: "로그인 — PICK IT" },
-      { property: "og:description", content: "PICK IT에 로그인하고 장병들의 무대를 응원하세요." },
+      { property: "og:description", content: "PICK IT에 로그인하고 좋아하는 무대를 발견하고 응원하세요." },
     ],
   }),
   component: SignIn,

@@ -6,9 +6,9 @@ export const Route = createFileRoute("/community")({
   head: () => ({
     meta: [
       { title: "커뮤니티 — PICK IT" },
-      { name: "description", content: "장병들의 무대에 응원을 남기고 참가자의 답글을 확인하세요." },
+      { name: "description", content: "좋아하는 무대에 응원을 남기고 참가자의 답글을 확인하세요." },
       { property: "og:title", content: "커뮤니티 — PICK IT" },
-      { property: "og:description", content: "장병들의 무대에 응원을 남기고 참가자의 답글을 확인하세요." },
+      { property: "og:description", content: "좋아하는 무대에 응원을 남기고 참가자의 답글을 확인하세요." },
     ],
   }),
   component: Community,

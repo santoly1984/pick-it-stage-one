@@ -12,9 +12,9 @@ export const Route = createFileRoute("/apply")({
   head: () => ({
     meta: [
       { title: "오디션 지원 — PICK IT" },
-      { name: "description", content: "군 장병 음악 오디션 PICK IT에 내 무대를 지원하세요." },
+      { name: "description", content: "진행 중인 PICK IT 오디션에 내 무대를 지원하세요. 현재 시즌 1 군 장병 음악 오디션 접수 중." },
       { property: "og:title", content: "오디션 지원 — PICK IT" },
-      { property: "og:description", content: "군 장병 음악 오디션 PICK IT에 내 무대를 지원하세요." },
+      { property: "og:description", content: "진행 중인 PICK IT 오디션에 내 무대를 지원하세요. 현재 시즌 1 군 장병 음악 오디션 접수 중." },
     ],
   }),
   component: Apply,
@@ -28,6 +28,9 @@ function Apply() {
     contact: "",
     songTitle: "",
     story: "",
+    intro: "",
+    motivation: "",
+    songReason: "",
   });
 
   const set = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -36,14 +39,14 @@ function Apply() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    const res = await auditionService.submitApplication(form);
+    const res = await auditionService.submitApplication({ ...form, story: [form.intro, form.motivation, form.songReason].filter(Boolean).join("\n\n") });
     setSubmitting(false);
     toast.success("지원서가 접수됐습니다", { description: `접수번호 ${res.applicationId}` });
   };
 
   return (
     <div className="min-h-screen">
-      <PageHeader title="오디션 지원" subtitle="PICK IT 2026 시즌 1 · 2차 라운드" backTo="/home" />
+      <PageHeader title="오디션 지원" subtitle="시즌 1 · 군 장병 음악 오디션 · 2차 라운드" backTo="/home" />
       <form onSubmit={submit} className="space-y-5 px-5 py-6">
         <div className="panel p-4 text-xs leading-relaxed text-muted-foreground">
           지원 후 부대 지휘관 확인 절차가 진행됩니다. 이번 단계에서는 파일 업로드와 심사 연동이 mock으로 동작합니다.
@@ -61,13 +64,14 @@ function Apply() {
         <Field label="곡 제목">
           <Input value={form.songTitle} onChange={set("songTitle")} placeholder="출품할 곡 제목" required />
         </Field>
-        <Field label="스토리">
-          <Textarea
-            value={form.story}
-            onChange={set("story")}
-            rows={6}
-            placeholder="이 곡을 만들게 된 이야기를 적어주세요."
-          />
+        <Field label="소개">
+          <Textarea value={form.intro} onChange={set("intro")} rows={3} placeholder="나는 어떤 음악을 하는 사람인가요?" />
+        </Field>
+        <Field label="참가 계기">
+          <Textarea value={form.motivation} onChange={set("motivation")} rows={3} placeholder="이 오디션에 지원한 이유를 들려주세요." />
+        </Field>
+        <Field label="선곡 이유">
+          <Textarea value={form.songReason} onChange={set("songReason")} rows={3} placeholder="왜 이 곡으로 무대에 서나요?" />
         </Field>
 
         <div className="panel flex items-center justify-between p-4">

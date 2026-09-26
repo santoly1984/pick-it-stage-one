@@ -54,6 +54,9 @@ export interface ApplicationInput {
   contact: string;
   songTitle: string;
   story: string;
+  intro?: string;
+  motivation?: string;
+  songReason?: string;
   audioFileName?: string;
 }
 
