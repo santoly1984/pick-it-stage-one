@@ -85,7 +85,7 @@ export function VoteSheetProvider({ children }: { children: ReactNode }) {
     <VoteSheetContext.Provider value={api}>
       {children}
       <Sheet open={Boolean(target)} onOpenChange={(o) => !o && setTarget(null)}>
-        <SheetContent side="bottom" className="rounded-t-2xl border-border bg-surface px-5 pb-8">
+        <SheetContent side="bottom" className="theme-light rounded-t-2xl border-border bg-background px-5 pb-8">
           <SheetHeader className="px-0 text-left">
             <SheetTitle className="text-lg">
               {step === "done" ? "투표 완료" : `${target?.artistName ?? ""} 님에게 투표`}

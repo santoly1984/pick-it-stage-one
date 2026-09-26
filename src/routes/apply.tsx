@@ -45,7 +45,7 @@ function Apply() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="theme-light min-h-screen">
       <PageHeader title="오디션 지원" subtitle="시즌 1 · 군 장병 음악 오디션 · 지원서 예시(mock)" backTo="/home" />
       <form onSubmit={submit} className="space-y-5 px-5 py-6">
         <div className="panel p-4 text-xs leading-relaxed text-muted-foreground">

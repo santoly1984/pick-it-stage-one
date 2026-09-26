@@ -38,7 +38,7 @@ function RoleOnboarding() {
   const destination = selected.includes("challenger") ? "/apply" : "/home";
 
   return (
-    <div className="min-h-screen">
+    <div className="theme-light min-h-screen">
       <PageHeader title="어떻게 참여하시겠어요?" backTo="/signin" />
       <div className="space-y-6 px-5 py-6">
         <p className="text-sm text-muted-foreground">
@@ -78,7 +78,7 @@ function RoleOnboarding() {
             setSession(selected.includes("challenger") ? DEMO_ACCOUNTS.challenger : DEMO_ACCOUNTS.fan);
             navigate({ to: destination });
           }}
-          className="h-12 w-full rounded-xl bg-primary text-sm font-semibold disabled:opacity-40"
+          className="h-12 w-full rounded-xl bg-primary text-sm text-primary-foreground font-semibold disabled:opacity-40"
         >
           계속하기
         </button>

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import hero from "@/assets/hero-stage.jpg";
+import { DiscGraphic } from "@/components/brand/DiscGraphic";
 
 const TITLE = "PICK IT — 새로운 목소리를 듣고 고르는 음악 플랫폼";
 const DESC = "다양한 음악 오디션의 무대를 발견하고, 감상하고, 직접 선택하세요.";
@@ -24,34 +24,22 @@ function Welcome() {
       </div>
 
       <div className="px-6 pt-10">
-        <h1 className="text-[32px] font-bold leading-[1.3] tracking-tight">
+        <h1 className="text-[36px] font-bold leading-[1.25] tracking-tight">
           좋은 음악은
           <br />
-          <span className="text-primary">당신이 골라요</span>
+          <span className="text-accent">당신이 골라요</span>
         </h1>
         <p className="mt-4 text-base leading-relaxed text-muted-foreground">
           새로운 목소리를 발견하고, 무대 뒤 이야기까지 듣고, 마음에 드는 무대에 투표하세요.
         </p>
       </div>
 
-      <div className="px-6 pt-8">
-        <img
-          src={hero}
-          alt="무대 조명 아래의 마이크"
-          width={1600}
-          height={912}
-          className="aspect-[4/3] w-full rounded-3xl object-cover"
-        />
-        <div className="panel mt-3 flex items-center justify-between px-4 py-3.5">
-          <div className="min-w-0">
-            <p className="text-xs text-muted-foreground">지금 진행 중인 오디션</p>
-            <p className="truncate text-sm font-semibold">시즌 1 · 군 장병 음악 오디션</p>
-          </div>
-          <span className="shrink-0 rounded-full bg-accent/15 px-2.5 py-1 text-xs font-semibold text-accent">투표 중</span>
-        </div>
+      <div className="mt-auto px-6 pt-8">
+        <DiscGraphic />
+        <p className="mt-4 text-xs text-muted-foreground">지금 진행 중 · 시즌 1 군 장병 음악 오디션</p>
       </div>
 
-      <div className="mt-auto space-y-2 px-6 pb-10 pt-10">
+      <div className="space-y-2 px-6 pb-10 pt-6">
         <Link
           to="/signin"
           className="flex h-14 w-full items-center justify-center rounded-2xl bg-primary text-base font-semibold text-primary-foreground"

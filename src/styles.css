@@ -64,7 +64,7 @@
 }
 
 :root {
-  --radius: 1rem;
+  --radius: 0.75rem;
 
   /* base */
   --background: oklch(0.173 0.0787 285);
@@ -123,6 +123,30 @@
 
 .dark {
   color-scheme: dark;
+}
+
+/* Light surface for account/apply/vote flows (Figma: Sign in, Role, Apply, Voting) */
+.theme-light {
+  --background: oklch(0.985 0.006 298);
+  --foreground: oklch(0.2 0.09 285);
+  --surface: oklch(0.955 0.018 298);
+  --surface-2: oklch(0.93 0.03 298);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2 0.09 285);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2 0.09 285);
+  --primary: oklch(0.5585 0.251 281.64);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.93 0.03 298);
+  --secondary-foreground: oklch(0.2 0.09 285);
+  --muted: oklch(0.955 0.018 298);
+  --muted-foreground: oklch(0.48 0.05 290);
+  --border: oklch(0.9 0.025 298);
+  --input: oklch(0.9 0.025 298);
+  --ring: oklch(0.5585 0.251 281.64);
+  color-scheme: light;
+  background-color: var(--background);
+  color: var(--foreground);
 }
 
 @layer base {
