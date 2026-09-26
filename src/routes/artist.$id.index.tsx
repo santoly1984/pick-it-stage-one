@@ -81,7 +81,7 @@ function ArtistDetail() {
         </div>
       </section>
 
-      <section className="px-5 pb-2">
+      <section className="px-5 pb-2 pt-6">
         <h3 className="text-lg font-bold">이 무대의 이야기</h3>
         <div className="mt-4">
           <StoryFlow entry={entry} />
