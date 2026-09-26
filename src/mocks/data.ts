@@ -232,7 +232,7 @@ export const judgeScores: JudgeScore[] = entries.flatMap((entry, ei) =>
       criteria.map((c, ci) => [c.id, seededScore(ei * 7 + ji * 3 + ci, c.max)]),
     ),
     ...(ji === 0 ? { comment: "가사 전달력이 좋고, 후반부 고음 처리에서 안정감이 있습니다." } : {}),
-    status: ((ei + ji) % 5 === 0 ? "draft" : "submitted") as JudgeScore["status"],
+    status: (ji === 0 && ei % 5 === 0 ? "draft" : "submitted") as JudgeScore["status"],
     updatedAt: "2026-09-22T10:00:00.000Z",
   })),
 );
