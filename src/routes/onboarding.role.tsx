@@ -17,11 +17,11 @@ export const Route = createFileRoute("/onboarding/role")({
   component: RoleOnboarding,
 });
 
-const ROLES: { role: UserRole; title: string; desc: string; icon: typeof Users; to: string }[] = [
-  { role: "fan", title: "팬", desc: "무대를 듣고 투표로 응원합니다.", icon: Users, to: "/home" },
-  { role: "challenger", title: "참가자", desc: "오디션에 지원하고 내 무대를 올립니다.", icon: Mic2, to: "/apply" },
-  { role: "judge", title: "심사위원", desc: "배정된 라운드를 평가합니다. 별도 권한이 필요합니다.", icon: Gavel, to: "/judge" },
-  { role: "admin", title: "운영자", desc: "오디션 운영과 결과 확정을 담당합니다.", icon: ShieldCheck, to: "/admin" },
+const ROLES: { role: UserRole; title: string; desc: string; icon: typeof Users }[] = [
+  { role: "fan", title: "팬", desc: "무대를 듣고 투표로 응원합니다.", icon: Users },
+  { role: "challenger", title: "참가자", desc: "오디션에 지원하고 내 무대를 올립니다.", icon: Mic2 },
+  { role: "judge", title: "심사위원", desc: "배정된 라운드를 평가합니다. 별도 권한이 필요합니다.", icon: Gavel },
+  { role: "admin", title: "운영자", desc: "오디션 운영과 결과 확정을 담당합니다.", icon: ShieldCheck },
 ];
 
 function RoleOnboarding() {
@@ -40,7 +40,13 @@ function RoleOnboarding() {
     });
   };
 
-  const primary = ROLES.find((r) => r.role === (selected.includes("challenger") ? "challenger" : selected[0]));
+  const destination = selected.includes("admin")
+    ? "/admin"
+    : selected.includes("judge")
+      ? "/judge"
+      : selected.includes("challenger")
+        ? "/apply"
+        : "/home";
 
   return (
     <div className="min-h-screen">
@@ -79,7 +85,7 @@ function RoleOnboarding() {
         <button
           type="button"
           disabled={!selected.length}
-          onClick={() => navigate({ to: primary?.to ?? "/home" })}
+          onClick={() => navigate({ to: destination })}
           className="h-12 w-full rounded-xl bg-primary text-sm font-semibold disabled:opacity-40"
         >
           계속하기
