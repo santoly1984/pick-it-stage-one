@@ -1,0 +1,306 @@
+/**
+ * In-memory mock dataset. Replace with real API responses later —
+ * the service layer (`src/services`) is the only consumer of this module.
+ */
+import cover1 from "@/assets/cover-1.jpg";
+import cover2 from "@/assets/cover-2.jpg";
+import cover3 from "@/assets/cover-3.jpg";
+import cover4 from "@/assets/cover-4.jpg";
+
+import type {
+  Audition,
+  AuditLog,
+  Comment,
+  Entry,
+  EvaluationRule,
+  JudgeScore,
+  LyricsDocument,
+  Notification,
+  Round,
+  TicketBalance,
+  Track,
+  User,
+  Vote,
+} from "@/types";
+
+export const COVERS = [cover1, cover2, cover3, cover4];
+
+const AUDIO = [
+  "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+  "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+  "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+  "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
+];
+
+const UNITS = [
+  "육군 제3보병사단",
+  "해군 제1함대",
+  "공군 제11전투비행단",
+  "해병대 제2사단",
+  "육군 수도기계화사단",
+  "국군지원사령부",
+];
+
+const NAMES = [
+  "강태오",
+  "윤시후",
+  "박정민",
+  "이건우",
+  "서준혁",
+  "최민재",
+  "한도윤",
+  "임재현",
+  "노승우",
+  "정하람",
+  "오세진",
+  "백지훈",
+];
+
+const TAGLINES = [
+  "연병장에서 쓴 첫 자작곡",
+  "위병소 앞에서 부르던 노래",
+  "전역까지 D-102, 목소리로 남기는 기록",
+  "훈련 끝, 마이크 앞에서",
+  "누나에게 보내는 편지",
+  "새벽 근무 중 떠오른 멜로디",
+];
+
+export const currentUser: User = {
+  id: "u_me",
+  displayName: "보원",
+  handle: "@bowon",
+  roles: ["fan", "challenger"],
+  unit: "육군 제3보병사단",
+  createdAt: "2026-01-04T09:00:00.000Z",
+};
+
+export const users: User[] = [
+  currentUser,
+  { id: "u_judge1", displayName: "심사위원 A", handle: "@judge_a", roles: ["judge"], createdAt: "2026-01-01T00:00:00.000Z" },
+  { id: "u_judge2", displayName: "심사위원 B", handle: "@judge_b", roles: ["judge"], createdAt: "2026-01-01T00:00:00.000Z" },
+  { id: "u_judge3", displayName: "심사위원 C", handle: "@judge_c", roles: ["judge"], createdAt: "2026-01-01T00:00:00.000Z" },
+  { id: "u_admin", displayName: "운영자", handle: "@admin", roles: ["admin"], createdAt: "2026-01-01T00:00:00.000Z" },
+];
+
+export const tracks: Track[] = NAMES.map((name, i) => ({
+  id: `t_${i + 1}`,
+  title: ["첫 휴가", "야간 근무", "편지", "다시 봄", "복무일지", "네 이름", "새벽 5시", "돌아갈 자리", "먼지", "사이렌", "수요일", "전역일"][i],
+  artistName: name,
+  audioUrl: AUDIO[i % AUDIO.length],
+  coverUrl: COVERS[i % COVERS.length],
+  durationSec: 214 + (i % 5) * 17,
+  lyricsStatus: i === 0 ? "published" : i === 1 ? "review" : "draft",
+}));
+
+export const auditions: Audition[] = [
+  {
+    id: "a_1",
+    title: "PICK IT 2026 시즌 1",
+    subtitle: "군 장병 음악 오디션",
+    status: "voting",
+    coverUrl: COVERS[0],
+    startsAt: "2026-08-01T00:00:00.000Z",
+    endsAt: "2026-11-30T00:00:00.000Z",
+    roundIds: ["r_1", "r_2"],
+  },
+];
+
+export const rounds: Round[] = [
+  {
+    id: "r_1",
+    auditionId: "a_1",
+    name: "1차 라운드 · 예선",
+    order: 1,
+    status: "finalized",
+    entryIds: NAMES.map((_, i) => `e_${i + 1}`),
+    votingOpensAt: "2026-08-10T00:00:00.000Z",
+    votingClosesAt: "2026-09-10T00:00:00.000Z",
+  },
+  {
+    id: "r_2",
+    auditionId: "a_1",
+    name: "2차 라운드 · 본선",
+    order: 2,
+    status: "live",
+    entryIds: NAMES.slice(0, 8).map((_, i) => `e_${i + 1}`),
+    votingOpensAt: "2026-09-15T00:00:00.000Z",
+    votingClosesAt: "2026-10-15T00:00:00.000Z",
+  },
+];
+
+export const entries: Entry[] = NAMES.map((name, i) => ({
+  id: `e_${i + 1}`,
+  auditionId: "a_1",
+  roundId: i < 8 ? "r_2" : "r_1",
+  challengerId: i === 0 ? "u_me" : `u_c${i + 1}`,
+  artistName: name,
+  unit: UNITS[i % UNITS.length],
+  trackId: `t_${i + 1}`,
+  interviewVideoUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+  coverUrl: COVERS[i % COVERS.length],
+  tagline: TAGLINES[i % TAGLINES.length],
+  story:
+    "입대 전에는 무대에 서는 일이 당연했습니다. 훈련소에서 3주가 지났을 때, 노래가 없는 하루가 얼마나 긴지 알게 됐어요.\n\n생활관 소등 후에 가사를 적었습니다. 처음에는 그냥 버티려고 쓴 글이었는데, 어느 순간 부대 동기들이 먼저 흥얼거리기 시작하더라고요. 이 곡은 그렇게 만들어졌습니다.\n\n지금 이 노래를 듣는 분들이, 각자의 자리에서 버티는 시간을 조금 덜 외롭게 보내면 좋겠습니다.",
+  submittedAt: "2026-09-01T12:00:00.000Z",
+}));
+
+export const lyricsDocs: LyricsDocument[] = [
+  {
+    trackId: "t_1",
+    status: "published",
+    canonicalText: [
+      "첫 휴가 나가는 날 아침",
+      "군화 끈을 두 번 고쳐 매고",
+      "창밖은 아직 어두운데",
+      "내 마음만 먼저 도착해 있어",
+      "역으로 가는 길 위에서",
+      "네 이름을 몇 번이나 불렀는지",
+      "돌아갈 걸 알면서도",
+      "오늘만은 끝나지 않았으면",
+      "말없이 웃던 네 얼굴",
+      "그거 하나로 버틴 계절",
+    ].join("\n"),
+    lines: [
+      "첫 휴가 나가는 날 아침",
+      "군화 끈을 두 번 고쳐 매고",
+      "창밖은 아직 어두운데",
+      "내 마음만 먼저 도착해 있어",
+      "역으로 가는 길 위에서",
+      "네 이름을 몇 번이나 불렀는지",
+      "돌아갈 걸 알면서도",
+      "오늘만은 끝나지 않았으면",
+      "말없이 웃던 네 얼굴",
+      "그거 하나로 버틴 계절",
+    ].map((text, i) => ({
+      id: `l_${i + 1}`,
+      startSec: 8 + i * 12,
+      endSec: 8 + (i + 1) * 12,
+      text,
+    })),
+    updatedAt: "2026-09-20T02:00:00.000Z",
+  },
+];
+
+export const ticketBalance: TicketBalance = {
+  userId: "u_me",
+  free: 3,
+  standard: 12,
+  freeResetsAt: "2026-09-27T00:00:00.000Z",
+};
+
+export const votes: Vote[] = [];
+
+export const evaluationRule: EvaluationRule = {
+  id: "rule_1",
+  auditionId: "a_1",
+  voteWeight: 0.4,
+  judgeWeight: 0.45,
+  technicalWeight: 0.15,
+  criteria: [
+    { id: "vocal", label: "보컬 · 표현력", max: 40, description: "음정, 리듬, 전달력" },
+    { id: "originality", label: "곡 완성도", max: 30, description: "작사/작곡, 편곡 완성도" },
+    { id: "stage", label: "무대 매력", max: 20, description: "퍼포먼스, 몰입도" },
+    { id: "story", label: "스토리 적합성", max: 10, description: "PICK IT 취지 부합" },
+  ],
+  updatedAt: "2026-09-10T00:00:00.000Z",
+};
+
+function seededScore(seed: number, max: number) {
+  return Math.round(((Math.sin(seed) + 1) / 2) * max * 0.35 + max * 0.6);
+}
+
+export const judgeScores: JudgeScore[] = entries.flatMap((entry, ei) =>
+  ["u_judge1", "u_judge2", "u_judge3"].map((judgeId, ji) => ({
+    id: `js_${entry.id}_${judgeId}`,
+    roundId: entry.roundId,
+    entryId: entry.id,
+    judgeId,
+    scores: Object.fromEntries(
+      evaluationRule.criteria.map((c, ci) => [c.id, seededScore(ei * 7 + ji * 3 + ci, c.max)]),
+    ),
+    comment: ji === 0 ? "가사 전달력이 좋고, 후반부 고음 처리에서 안정감이 있습니다." : undefined,
+    status: (ei + ji) % 5 === 0 ? "draft" : "submitted",
+    updatedAt: "2026-09-22T10:00:00.000Z",
+  })),
+);
+
+export const comments: Comment[] = [
+  {
+    id: "c_1",
+    entryId: "e_1",
+    authorId: "u_f1",
+    authorName: "지민맘",
+    authorRole: "fan",
+    isVerifiedChallenger: false,
+    body: "새벽에 듣다가 울었어요. 무사 전역까지 응원합니다!",
+    createdAt: "2026-09-23T13:20:00.000Z",
+  },
+  {
+    id: "c_2",
+    entryId: "e_1",
+    authorId: "u_me",
+    authorName: "강태오",
+    authorRole: "challenger",
+    isVerifiedChallenger: true,
+    body: "들어주셔서 감사합니다. 다음 라운드에서 더 좋은 무대로 인사드릴게요.",
+    createdAt: "2026-09-23T15:02:00.000Z",
+    parentId: "c_1",
+  },
+  {
+    id: "c_3",
+    entryId: "e_2",
+    authorId: "u_f2",
+    authorName: "동기김상병",
+    authorRole: "fan",
+    isVerifiedChallenger: false,
+    body: "생활관에서 진짜 이러고 부릅니다 ㅋㅋ 인정",
+    createdAt: "2026-09-24T09:10:00.000Z",
+  },
+];
+
+export const notifications: Notification[] = [
+  {
+    id: "n_1",
+    userId: "u_me",
+    kind: "ranking",
+    title: "실시간 순위가 갱신됐어요",
+    body: "응원 중인 강태오 님이 2위로 올라섰습니다.",
+    createdAt: "2026-09-26T13:00:00.000Z",
+  },
+  {
+    id: "n_2",
+    userId: "u_me",
+    kind: "vote",
+    title: "무료 투표권 3장이 충전됐어요",
+    body: "매일 자정에 무료 투표권이 충전됩니다.",
+    createdAt: "2026-09-26T00:00:00.000Z",
+  },
+];
+
+export const auditLogs: AuditLog[] = [
+  {
+    id: "al_1",
+    actorId: "u_admin",
+    actorName: "운영자",
+    action: "evaluation_rule.update",
+    target: "rule_1",
+    meta: { voteWeight: 0.4, judgeWeight: 0.45 },
+    createdAt: "2026-09-10T00:12:00.000Z",
+  },
+  {
+    id: "al_2",
+    actorId: "u_admin",
+    actorName: "운영자",
+    action: "lyrics.publish",
+    target: "t_1",
+    createdAt: "2026-09-20T02:01:00.000Z",
+  },
+  {
+    id: "al_3",
+    actorId: "u_judge1",
+    actorName: "심사위원 A",
+    action: "judge_score.submit",
+    target: "e_3",
+    createdAt: "2026-09-22T10:00:00.000Z",
+  },
+];
