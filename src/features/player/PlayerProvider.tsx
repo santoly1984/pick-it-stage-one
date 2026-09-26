@@ -162,27 +162,41 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     };
   }, [goTo, setState]);
 
+  /** Explicit user play takes focus back from any interview video. */
+  const takeFocus = useCallback(() => {
+    if (!suspendedRef.current) return;
+    suspendedRef.current = false;
+    resumeRef.current = false;
+    setState((s) => ({ ...s, suspended: false }));
+  }, [setState]);
+
   const playQueue = useCallback(
     (queue: PlayerTrack[], startIndex = 0) => {
       const current = queue[startIndex] ?? null;
       // A new explicit selection always restarts, even for the same track.
       loadedTrackIdRef.current = null;
+      takeFocus();
       setState((s) => ({ ...s, queue, index: startIndex, current }));
       stateRef.current = { ...stateRef.current, queue, index: startIndex, current };
       loadTrack(current, true);
     },
-    [loadTrack, setState],
+    [loadTrack, setState, takeFocus],
   );
 
-  const play = useCallback(() => tryPlay(), [tryPlay]);
+  const play = useCallback(() => {
+    takeFocus();
+    tryPlay();
+  }, [takeFocus, tryPlay]);
   const pause = useCallback(() => audioRef.current?.pause(), []);
 
   const toggle = useCallback(() => {
     const audio = audioRef.current;
     if (!audio || !stateRef.current.current) return;
-    if (audio.paused) tryPlay();
-    else audio.pause();
-  }, [tryPlay]);
+    if (audio.paused) {
+      takeFocus();
+      tryPlay();
+    } else audio.pause();
+  }, [takeFocus, tryPlay]);
 
   const seek = useCallback(
     (seconds: number) => {
