@@ -15,14 +15,14 @@ export function EntryCard({ entry, queue }: { entry: PublicEntry; queue?: string
             loading="lazy"
             width={160}
             height={160}
-            className="aspect-square w-full rounded-lg object-cover"
+            className="aspect-square w-full rounded-2xl object-cover"
           />
         </Link>
         <button
           type="button"
           aria-label={`${entry.artistName} 재생`}
           onClick={() => play(entry.id, queue)}
-          className="absolute bottom-2 right-2 grid size-9 place-items-center rounded-full bg-primary"
+          className="absolute bottom-2 right-2 grid size-9 place-items-center rounded-full bg-primary text-primary-foreground"
         >
           <Play className="size-4" />
         </button>
