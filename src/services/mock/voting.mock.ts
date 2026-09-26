@@ -4,7 +4,7 @@
  * Balance mutations are in-memory only.
  */
 import type { VotingService } from "@/services/contracts";
-import { ticketBalance, votes } from "@/mocks/data";
+import { ticketBalance, votes, rounds } from "@/mocks/data";
 import type { Vote } from "@/types";
 import { clone, delay, nowIso, uid } from "./util";
 
@@ -15,6 +15,8 @@ export const mockVotingService: VotingService = {
     return delay({ ...balance });
   },
   async castVote({ userId, entryId, roundId, ticketType, quantity }) {
+    const round = rounds.find((r) => r.id === roundId);
+    if (!round || round.status !== "live") throw new Error("투표 기간이 아닌 라운드입니다.");
     if (balance[ticketType] < quantity) throw new Error("보유한 투표권이 부족합니다.");
     balance[ticketType] -= quantity;
     const vote: Vote = {

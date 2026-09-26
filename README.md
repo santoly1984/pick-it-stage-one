@@ -6,10 +6,11 @@ PICK IT은 범용 음악 오디션/투표 플랫폼입니다. "군 장병 음악
 ## 실행
 
 ```sh
-bun install        # 또는 npm i
-bun run dev        # http://localhost:8080
-npx tsgo --noEmit  # 타입 검사
-bun run build      # 프로덕션 빌드
+bun install        # 또는 npm i  (bun.lock 기준)
+bun run dev        # vite dev → http://localhost:8080
+npx tsgo --noEmit  # 타입 검사 (또는 npx tsc --noEmit)
+bun run build      # vite build (Cloudflare Worker 대상 SSR 빌드)
+bun run lint       # eslint
 ```
 
 스택: TanStack Start v1 (React 19, Vite 7), Tailwind v4 (`src/styles.css` 토큰), TanStack Query, shadcn/ui.
@@ -37,6 +38,18 @@ src/types/         도메인 타입 (User, Entry, RankingEntry, AdminRankingEntr
 | 심사 | 점수 저장 시 새 스냅샷 생성 + Admin 진행률 갱신 | `services/mock/judging.mock.ts` |
 | 가사 싱크 | 원본 저장 → 균등 간격 가짜 정렬 → 타임스탬프 수정 → 검수 후 공개 | `services/mock/lyrics.mock.ts` |
 | 커뮤니티 | 메모리 댓글/신고 | `services/mock/community.mock.ts` |
+
+### 데모 음원·영상·가사
+
+- `public/audio/demo-a.mp3`(20초), `demo-b.mp3`(18초), `demo-c.mp3`(16초): ffmpeg 사인파 화음으로 **직접 생성한 합성 instrumental**. 외부 음원·저작권 불분명 음악 없음.
+- 참가자 12명이 파일 3개를 돌려 씁니다(`mocks/data.ts` `AUDIO`). 플레이어는 **trackId 기준**으로 전환하므로 같은 파일이어도 곡을 고르면 0초부터 재생됩니다.
+- `public/video/interview-demo.webm`(6초, 테스트 패턴): 인터뷰 영상 자리 표시. 재생 시 음악 일시정지, 끝나면 이어서 재생.
+- 가사는 `t_1`(첫 휴가)만 공개 상태이며 타임스탬프는 **UI 테스트용 균등 간격**입니다. 실제 보컬 정렬이 아니며 플레이어 화면에도 그렇게 표시됩니다.
+- 로컬 교체: 실제 음원은 Track `audioUrl`(스토리지 URL), 가사는 `LyricsService`의 정렬 결과로 바꾸면 됩니다. 화면 수정은 필요 없습니다.
+
+### 샘플 ID
+
+`services/index.ts`의 `DEFAULT_AUDITION_ID`/`DEFAULT_ROUND_ID`/`DEFAULT_JUDGE_ID`는 **1차 샘플(오디션 1개, 진행 라운드 r_2, 심사위원 A)** 전제입니다. 투표는 항상 참가자의 `roundId`를 쓰고, 진행 중 라운드(`LIVE_VOTING_ROUND_ID`)가 아니면 버튼이 "투표 종료"로 막히고 서비스도 거부합니다. 여러 프로그램이 생기면 라운드 선택/현재 라운드 API로 교체하세요.
 
 mock 상태는 **페이지 새로고침 시 초기화**됩니다. 흐름 검수는 앱 안에서 링크로 이동하며 하세요.
 
@@ -77,7 +90,8 @@ Judge/Admin은 가입 시 선택할 수 없습니다. `/demo/roles`는 실제 �
 3. 운영자 → 순위 관리: 2차 라운드가 "심사 중 · 잠정" (심사 22/24).
 4. 심사위원 → 한도윤(e_1), 최민재(e_6) 평가 저장 → 운영자 화면이 "심사 완료", 스냅샷 버전 증가.
 5. 검토 시작 → 결과 확정 → 공개(publish) → 팬 계정 랭킹의 최종 순위 공개 확인. 공개 화면에 점수·가중치·부대명 없음.
-6. 운영자 → 가사 싱크: 원본 저장 → 자동 싱크 → 시작 초 수정·저장 → 검수 완료·공개.
+6. 플레이어: 홈 TOP10 재생 → 랭킹 → 플레이어 이동 중 끊김 없음, 이전/다음/일시정지/탐색, 곡 끝(16~20초) 자동 다음 곡, 재생 목록 탭, `첫 휴가` 가사 강조·자동 스크롤, 참가자 화면 인터뷰 영상 재생 시 음악 일시정지 → 영상 종료 후 재개.
+7. 운영자 → 가사 싱크: 원본 저장 → 자동 싱크 → 시작 초 수정·저장 → 검수 완료·공개.
 
 (위 3~6은 링크 이동으로 진행해야 합니다. 새로고침하면 mock 데이터가 초기화됩니다.)
 

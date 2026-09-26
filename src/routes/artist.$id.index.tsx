@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronRight, Heart, Play } from "lucide-react";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { auditionService, DEFAULT_ROUND_ID } from "@/services";
+import { auditionService, LIVE_VOTING_ROUND_ID } from "@/services";
 import { usePlayEntry } from "@/hooks/usePlayEntry";
 import { useVoteSheet } from "@/features/voting/VoteSheetProvider";
 import { InterviewVideo } from "@/features/artist/InterviewVideo";
@@ -74,9 +74,10 @@ function ArtistDetail() {
             variant="secondary"
             size="lg"
             className="flex-1"
-            onClick={() => vote.open({ entryId: entry.id, artistName: entry.artistName, roundId: DEFAULT_ROUND_ID })}
+            onClick={() => vote.open({ entryId: entry.id, artistName: entry.artistName, roundId: entry.roundId })}
+            disabled={entry.roundId !== LIVE_VOTING_ROUND_ID}
           >
-            <Heart className="size-4" /> 투표하기
+            <Heart className="size-4" /> {entry.roundId === LIVE_VOTING_ROUND_ID ? "투표하기" : "투표 종료"}
           </Button>
         </div>
       </section>

@@ -21,7 +21,13 @@ export const notificationService = mockNotificationService;
 
 export * from "./contracts";
 
-/** Ids used across the scaffold while there is no routing-by-selection yet. */
+/**
+ * PHASE-1 SAMPLE CONTEXT. Single audition/season with r_2 as the live round.
+ * Replace with audition/round selection (route params or a "current round"
+ * API) when multiple programs exist. Votes always use the entry's own roundId.
+ */
 export const DEFAULT_AUDITION_ID = "a_1";
 export const DEFAULT_ROUND_ID = "r_2";
+/** Only this round accepts votes in the mock (r_1 is finalized). */
+export const LIVE_VOTING_ROUND_ID = DEFAULT_ROUND_ID;
 export const DEFAULT_JUDGE_ID = "u_judge1";

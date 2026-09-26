@@ -4,7 +4,8 @@ import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { formatTime, usePlayer } from "./PlayerProvider";
 import { LyricsView } from "./LyricsView";
-import { lyricsService, DEFAULT_ROUND_ID } from "@/services";
+import { QueueList } from "./QueueList";
+import { lyricsService, LIVE_VOTING_ROUND_ID } from "@/services";
 import { useVoteSheet } from "@/features/voting/VoteSheetProvider";
 import { useLiveRankOf } from "@/features/ranking/queries";
 import { RankChange } from "@/features/ranking/RankChange";
@@ -94,15 +95,21 @@ export function FullPlayer() {
         variant="secondary"
         className="mt-6 w-full"
         size="lg"
-        onClick={() => vote.open({ entryId: current.entryId, artistName: current.artistName, roundId: DEFAULT_ROUND_ID })}
+        onClick={() => vote.open({ entryId: current.entryId, artistName: current.artistName, roundId: current.roundId })}
+        disabled={current.roundId !== LIVE_VOTING_ROUND_ID}
       >
-        <Heart className="size-4" /> 이 무대에 투표하기
+        <Heart className="size-4" /> {current.roundId === LIVE_VOTING_ROUND_ID ? "이 무대에 투표하기" : "투표가 끝난 라운드입니다"}
       </Button>
 
       <section className="mt-8">
         <h3 className="text-sm font-bold">가사</h3>
+        <p className="mt-1 text-[11px] text-muted-foreground">
+          데모 음원·가사입니다. 타임스탬프 UI 테스트용이며 실제 보컬 싱크가 아닙니다.
+        </p>
         <LyricsView lines={publishedLines} currentTime={currentTime} onSeek={seek} className="mt-1" />
       </section>
+
+      <QueueList />
     </div>
   );
 }

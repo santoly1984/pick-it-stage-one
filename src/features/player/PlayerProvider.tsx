@@ -42,6 +42,8 @@ interface PlayerApi extends PlayerState {
   seek: (seconds: number) => void;
   next: () => void;
   prev: () => void;
+  /** Jump to a queue position (restarts from 0). */
+  playAt: (index: number) => void;
   /** Video took focus: pause audio and remember whether to resume. */
   suspendForVideo: () => void;
   /** Video released focus. `resume` restores playback if it was playing before. */
@@ -208,8 +210,21 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     [setState],
   );
 
-  const next = useCallback(() => goTo(stateRef.current.index + 1), [goTo]);
-  const prev = useCallback(() => goTo(stateRef.current.index - 1), [goTo]);
+  const next = useCallback(() => {
+    takeFocus();
+    goTo(stateRef.current.index + 1);
+  }, [goTo, takeFocus]);
+  const prev = useCallback(() => {
+    takeFocus();
+    goTo(stateRef.current.index - 1);
+  }, [goTo, takeFocus]);
+  const playAt = useCallback(
+    (i: number) => {
+      takeFocus();
+      goTo(i);
+    },
+    [goTo, takeFocus],
+  );
 
   const suspendForVideo = useCallback(() => {
     const audio = audioRef.current;
@@ -232,8 +247,8 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   );
 
   const value = useMemo<PlayerApi>(
-    () => ({ ...state, playQueue, toggle, play, pause, seek, next, prev, suspendForVideo, releaseVideoFocus }),
-    [state, playQueue, toggle, play, pause, seek, next, prev, suspendForVideo, releaseVideoFocus],
+    () => ({ ...state, playQueue, toggle, play, pause, seek, next, prev, playAt, suspendForVideo, releaseVideoFocus }),
+    [state, playQueue, toggle, play, pause, seek, next, prev, playAt, suspendForVideo, releaseVideoFocus],
   );
 
   return <PlayerContext.Provider value={value}>{children}</PlayerContext.Provider>;

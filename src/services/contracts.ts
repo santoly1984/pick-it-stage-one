@@ -45,6 +45,9 @@ export interface AuditionService {
   listEntries(params?: { roundId?: string; auditionId?: string }): Promise<PublicEntry[]>;
   getEntry(entryId: string): Promise<PublicEntry | undefined>;
   getTrack(trackId: string): Promise<Track | undefined>;
+  listTracks(): Promise<Track[]>;
+  /** Entry + track joined for the player queue (public fields only). */
+  getPlayableEntries(entryIds: string[]): Promise<{ entry: PublicEntry; track: Track }[]>;
   /** Recommendation at branch level (군종) — never exact unit. */
   listSameBranchEntries(entryId: string): Promise<PublicEntry[]>;
   submitApplication(input: ApplicationInput): Promise<{ applicationId: string }>;

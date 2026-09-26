@@ -40,7 +40,7 @@ export function LyricsView({ lines, currentTime, onSeek, className }: Props) {
   }
 
   return (
-    <div ref={containerRef} className={cn("max-h-72 overflow-y-auto pr-1", className)}>
+    <div ref={containerRef} className={cn("relative max-h-72 overflow-y-auto pr-1", className)}>
       <div className="flex flex-col gap-3 py-4">
         {lines.map((line, i) => (
           <button
