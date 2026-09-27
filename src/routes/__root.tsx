@@ -122,6 +122,7 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const { pathname } = useLocation();
   const browsePage = pathname === "/home" || pathname === "/ranking";
+  const welcomePage = pathname === "/welcome";
   useEffect(() => {
     hydrateSession();
   }, []);
@@ -131,7 +132,7 @@ function RootComponent() {
       {/* PlayerProvider lives above <Outlet /> so audio survives navigation. */}
       <PlayerProvider>
         <VoteSheetProvider>
-          <div className={`mx-auto min-h-screen pb-28 ${browsePage ? "max-w-4xl" : "max-w-2xl"}`}>
+          <div className={`mx-auto min-h-screen ${welcomePage ? "max-w-6xl pb-8" : browsePage ? "max-w-4xl pb-28" : "max-w-2xl pb-28"}`}>
             {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
             <Outlet />
           </div>
