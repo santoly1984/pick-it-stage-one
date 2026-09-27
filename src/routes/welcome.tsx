@@ -1,21 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { ArrowRight, Play } from "lucide-react";
-import { auditionService, rankingService, DEFAULT_ROUND_ID } from "@/services";
+import { ArrowRight } from "lucide-react";
+import { auditionService, DEFAULT_AUDITION_ID } from "@/services";
 import { Button } from "@/components/ui/button";
+import { publicRankingQuery } from "@/features/ranking/queries";
 
 const featuredQuery = queryOptions({
-  queryKey: ["welcome", "featured", DEFAULT_ROUND_ID],
-  queryFn: () => auditionService.getPlayableEntries(["e_1", "e_2", "e_13", "e_14"]),
+  queryKey: ["welcome", "featured", "e_1", "e_2", "e_14", "e_16"],
+  queryFn: () => auditionService.getPlayableEntries(["e_1", "e_2", "e_14", "e_16"]),
 });
 const programQuery = queryOptions({
   queryKey: ["welcome", "program"],
-  queryFn: () => auditionService.getAudition("a_1"),
+  queryFn: () => auditionService.getAudition(DEFAULT_AUDITION_ID),
 });
-const leadersQuery = queryOptions({
-  queryKey: ["ranking", "public", DEFAULT_ROUND_ID, "live-vote", 3],
-  queryFn: () => rankingService.getPublicRanking({ roundId: DEFAULT_ROUND_ID, kind: "live-vote", limit: 3 }),
-});
+const leadersQuery = publicRankingQuery("live-vote", 3);
 
 const TITLE = "PICK IT — 새로운 목소리를 듣고 고르는 음악 플랫폼";
 const DESC = "다양한 음악 오디션의 무대를 발견하고, 감상하고, 직접 선택하세요.";
@@ -78,11 +76,10 @@ function Welcome() {
         <div className="mt-5 grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-4 sm:gap-4">
           {featured.map(({ entry, track }) => (
             <Link key={entry.id} to="/artist/$id" params={{ id: entry.id }} className="group min-w-0">
-              <div className="relative aspect-square overflow-hidden rounded-md bg-surface-2">
+              <div className="relative aspect-square overflow-hidden rounded-md bg-secondary">
                 <img src={entry.coverUrl} alt="" className="size-full object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none" width={320} height={320} />
-                <span className="absolute bottom-3 right-3 grid size-9 place-items-center rounded-full bg-primary text-primary-foreground" aria-hidden="true"><Play className="size-4 fill-current" /></span>
               </div>
-              <p className="mt-2 truncate text-base font-bold">{entry.artistName}</p>
+              <p className="mt-2 flex items-center justify-between gap-2 text-base font-bold"><span className="truncate">{entry.artistName}</span><ArrowRight className="size-4 shrink-0 text-primary" /></p>
               <p className="truncate text-sm text-muted-foreground">{track.title}</p>
             </Link>
           ))}

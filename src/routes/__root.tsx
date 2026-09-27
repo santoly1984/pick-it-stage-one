@@ -132,7 +132,7 @@ function RootComponent() {
       {/* PlayerProvider lives above <Outlet /> so audio survives navigation. */}
       <PlayerProvider>
         <VoteSheetProvider>
-          <div className={`mx-auto min-h-screen ${welcomePage ? "max-w-6xl pb-8" : browsePage ? "max-w-4xl pb-28" : "max-w-2xl pb-28"}`}>
+          <div className={`mx-auto min-h-screen ${welcomePage ? "max-w-[1480px] pb-8" : browsePage ? "max-w-4xl pb-28" : "max-w-2xl pb-28"}`}>
             {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
             <Outlet />
           </div>
