@@ -7,6 +7,8 @@
 - [x] (4) Player: trackId switching, auto-next, error state, video focus
 - [x] (5) Per-round evaluation rule, simulate -> review -> save draft
 - [x] Verify typecheck + core flows
+- [x] Current-round 100-person mock fixture, nonnegative deterministic votes, valid round membership
+- [x] TOP10/TOP100 navigation and section browsing, compact artist-first Home/Ranking
 
 ## Follow-ups (need backend / decisions)
 - Real auth + server-side role checks (blocked: backend phase)

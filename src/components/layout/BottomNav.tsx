@@ -16,7 +16,7 @@ export function BottomNav() {
 
   return (
     <nav className="safe-bottom fixed inset-x-0 bottom-0 z-50 border-t border-border bg-surface/95 backdrop-blur">
-      <ul className="mx-auto grid max-w-2xl grid-cols-4">
+        <ul className={cn("mx-auto grid grid-cols-4", (pathname === "/home" || pathname === "/ranking") ? "max-w-4xl" : "max-w-2xl")}>
         {ITEMS.map(({ to, label, icon: Icon }) => {
           const active = pathname.startsWith(to);
           return (

@@ -6,6 +6,10 @@ import cover1 from "@/assets/cover-1.jpg";
 import cover2 from "@/assets/cover-2.jpg";
 import cover3 from "@/assets/cover-3.jpg";
 import cover4 from "@/assets/cover-4.jpg";
+import portrait1 from "@/assets/demo-portrait-1.jpg";
+import portrait2 from "@/assets/demo-portrait-2.jpg";
+import portrait3 from "@/assets/demo-portrait-3.jpg";
+import portrait4 from "@/assets/demo-portrait-4.jpg";
 
 import type {
   Audition,
@@ -25,10 +29,11 @@ import type {
 } from "@/types";
 
 export const COVERS = [cover1, cover2, cover3, cover4];
+const PORTRAITS = [portrait1, portrait2, portrait3, portrait4];
 
 const AUDIO = [
   // Locally generated synthetic instrumentals (ffmpeg sine chords, no third-party music).
-  // Demo only: 12 entries share 3 files; the player still switches by trackId.
+  // Demo only: tracks share 3 files; the player still switches by trackId.
   "/audio/demo-a.mp3",
   "/audio/demo-b.mp3",
   "/audio/demo-c.mp3",
@@ -89,10 +94,21 @@ export const tracks: Track[] = NAMES.map((name, i) => ({
   title: ["첫 휴가", "야간 근무", "편지", "다시 봄", "복무일지", "네 이름", "새벽 5시", "돌아갈 자리", "먼지", "사이렌", "수요일", "전역일"][i]!,
   artistName: name,
   audioUrl: AUDIO[i % AUDIO.length]!,
-  coverUrl: COVERS[i % COVERS.length]!,
+  coverUrl: i < 8 ? PORTRAITS[i % 2 === 0 ? 0 : 2]! : COVERS[i % COVERS.length]!,
   durationSec: [20, 18, 16][i % 3]!, // matches the local demo file
   lyricsStatus: i === 0 ? "published" : i === 1 ? "review" : "draft",
 }));
+
+/** Fictional sample profiles only. Replace this fixture with the real round feed in the service adapter. */
+const demoNames = ["김도현", "이서윤", "정우진", "박하린", "최유진", "한지우", "오민서", "송지호", "임소연", "문태윤", "배수아", "윤하늘"];
+const demoSongs = ["파란 새벽", "우리의 계절", "밤의 편지", "다른 길", "마지막 여름", "작은 불빛", "먼 곳에서", "잠들지 않는 밤", "나의 하루", "다시 노래", "비 오는 창", "첫 번째 무대"];
+const demoNumbers = Array.from({ length: 92 }, (_, i) => i + 13);
+tracks.push(...demoNumbers.map((n, i) => ({
+  id: `t_${n}`, title: `${demoSongs[i % demoSongs.length]} · 데모 ${String(i + 1).padStart(2, "0")}`,
+  artistName: `${demoNames[i % demoNames.length]} ${String(Math.floor(i / demoNames.length) + 1).padStart(2, "0")}`,
+  audioUrl: AUDIO[i % AUDIO.length]!, coverUrl: PORTRAITS[i % PORTRAITS.length]!,
+  durationSec: [20, 18, 16][i % 3]!, lyricsStatus: "draft" as const,
+})));
 
 export const auditions: Audition[] = [
   {
@@ -114,7 +130,7 @@ export const rounds: Round[] = [
     name: "1차 라운드 · 예선",
     order: 1,
     status: "finalized",
-    entryIds: NAMES.map((_, i) => `e_${i + 1}`),
+    entryIds: NAMES.slice(8).map((_, i) => `e_${i + 9}`),
     votingOpensAt: "2026-08-10T00:00:00.000Z",
     votingClosesAt: "2026-09-10T00:00:00.000Z",
   },
@@ -124,7 +140,7 @@ export const rounds: Round[] = [
     name: "2차 라운드 · 본선",
     order: 2,
     status: "live",
-    entryIds: NAMES.slice(0, 8).map((_, i) => `e_${i + 1}`),
+    entryIds: [...NAMES.slice(0, 8).map((_, i) => `e_${i + 1}`), ...demoNumbers.map((n) => `e_${n}`)],
     votingOpensAt: "2026-09-15T00:00:00.000Z",
     votingClosesAt: "2026-10-15T00:00:00.000Z",
   },
@@ -140,7 +156,7 @@ export const entries: Entry[] = NAMES.map((name, i) => ({
   branch: UNITS[i % UNITS.length]!.branch,
   trackId: `t_${i + 1}`,
   interviewVideoUrl: "/video/interview-demo.webm",
-  coverUrl: COVERS[i % COVERS.length]!,
+  coverUrl: i < 8 ? PORTRAITS[i % 2 === 0 ? 0 : 2]! : COVERS[i % COVERS.length]!,
   tagline: TAGLINES[i % TAGLINES.length]!,
   story:
     "입대 전에는 무대에 서는 일이 당연했습니다. 훈련소에서 3주가 지났을 때, 노래가 없는 하루가 얼마나 긴지 알게 됐어요.\n\n생활관 소등 후에 가사를 적었습니다. 처음에는 그냥 버티려고 쓴 글이었는데, 어느 순간 부대 동기들이 먼저 흥얼거리기 시작하더라고요. 이 곡은 그렇게 만들어졌습니다.\n\n지금 이 노래를 듣는 분들이, 각자의 자리에서 버티는 시간을 조금 덜 외롭게 보내면 좋겠습니다.",
@@ -149,6 +165,15 @@ export const entries: Entry[] = NAMES.map((name, i) => ({
   songReason: "소등 후에 적은 가사로 만든 곡입니다. 동기들이 먼저 흥얼거리기 시작한 노래라, 가장 솔직한 제 목소리라고 생각해 골랐어요.",
   submittedAt: "2026-09-01T12:00:00.000Z",
 }));
+entries.push(...demoNumbers.map((n, i) => ({
+  id: `e_${n}`, auditionId: "a_1", roundId: "r_2", challengerId: `u_demo_${n}`,
+  artistName: tracks.find((t) => t.id === `t_${n}`)?.artistName ?? `데모 참가자 ${n}`,
+  unit: "데모 소속 (가상)", branch: UNITS[i % UNITS.length]!.branch,
+  trackId: `t_${n}`, coverUrl: PORTRAITS[i % PORTRAITS.length]!,
+  tagline: "데모 무대 · 샘플 음악", story: "서비스 화면 검수를 위해 만든 가상 참가자와 합성 데모 음원입니다.",
+  intro: "PICK IT 화면 검수용 가상 참가자입니다.", motivation: "데모 라운드의 탐색 흐름을 확인합니다.",
+  songReason: "합성 음원으로 재생과 투표 흐름을 테스트합니다.", submittedAt: "2026-09-01T12:00:00.000Z",
+})));
 
 export const lyricsDocs: LyricsDocument[] = [
   {
@@ -234,7 +259,8 @@ export const judgeScores: JudgeScore[] = entries.flatMap((entry, ei) =>
       criteria.map((c, ci) => [c.id, seededScore(ei * 7 + ji * 3 + ci, c.max)]),
     ),
     ...(ji === 0 ? { comment: "가사 전달력이 좋고, 후반부 고음 처리에서 안정감이 있습니다." } : {}),
-    status: (ji === 0 && ei % 5 === 0 ? "draft" : "submitted") as JudgeScore["status"],
+    // Generated demo rows are pre-submitted so the original two pending reviews remain testable.
+    status: (ei < 8 && ji === 0 && ei % 5 === 0 ? "draft" : "submitted") as JudgeScore["status"],
     updatedAt: "2026-09-22T10:00:00.000Z",
   })),
 );

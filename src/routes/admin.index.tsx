@@ -11,6 +11,8 @@ export const Route = createFileRoute("/admin/")({
       { name: "description", content: "심사 진행률과 라운드 운영 현황을 한눈에 확인합니다." },
       { property: "og:title", content: "운영자 대시보드 — PICK IT" },
       { property: "og:description", content: "심사 진행률과 라운드 운영 현황을 한눈에 확인합니다." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AdminDashboard,

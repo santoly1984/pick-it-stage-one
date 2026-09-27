@@ -11,6 +11,8 @@ export const Route = createFileRoute("/admin/entries")({
       { name: "description", content: "출품작과 참가자 정보를 검토합니다." },
       { property: "og:title", content: "참가자 관리 — PICK IT" },
       { property: "og:description", content: "출품작과 참가자 정보를 검토합니다." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AdminEntries,

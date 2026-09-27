@@ -12,9 +12,11 @@ export const Route = createFileRoute("/apply")({
   head: () => ({
     meta: [
       { title: "오디션 지원 — PICK IT" },
-      { name: "description", content: "진행 중인 PICK IT 오디션에 내 무대를 지원하세요. 현재 시즌 1 군 장병 음악 오디션 접수 중." },
+      { name: "description", content: "PICK IT의 음악 오디션 지원 화면 예시입니다. 현재 시즌 1은 투표 진행 중입니다." },
       { property: "og:title", content: "오디션 지원 — PICK IT" },
-      { property: "og:description", content: "진행 중인 PICK IT 오디션에 내 무대를 지원하세요. 현재 시즌 1 군 장병 음악 오디션 접수 중." },
+      { property: "og:description", content: "PICK IT의 음악 오디션 지원 화면 예시입니다. 현재 시즌 1은 투표 진행 중입니다." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Apply,

@@ -10,6 +10,8 @@ export const Route = createFileRoute("/admin/audit")({
       { name: "description", content: "운영 변경 이력을 추적합니다." },
       { property: "og:title", content: "감사 로그 — PICK IT" },
       { property: "og:description", content: "운영 변경 이력을 추적합니다." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AdminAudit,

@@ -9,6 +9,8 @@ export const Route = createFileRoute("/player")({
       { name: "description", content: "가사와 함께 무대를 감상하세요." },
       { property: "og:title", content: "플레이어 — PICK IT" },
       { property: "og:description", content: "가사와 함께 무대를 감상하세요." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: PlayerPage,

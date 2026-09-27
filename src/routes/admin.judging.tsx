@@ -12,6 +12,8 @@ export const Route = createFileRoute("/admin/judging")({
       { name: "description", content: "심사위원별 제출 현황과 참가자 평가 breakdown을 검토합니다." },
       { property: "og:title", content: "심사 관리 — PICK IT" },
       { property: "og:description", content: "심사위원별 제출 현황과 참가자 평가 breakdown을 검토합니다." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AdminJudging,
