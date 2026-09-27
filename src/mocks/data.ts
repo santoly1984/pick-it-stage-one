@@ -6,10 +6,15 @@ import cover1 from "@/assets/cover-1.jpg";
 import cover2 from "@/assets/cover-2.jpg";
 import cover3 from "@/assets/cover-3.jpg";
 import cover4 from "@/assets/cover-4.jpg";
-import portrait1 from "@/assets/demo-portrait-1.jpg";
-import portrait2 from "@/assets/demo-portrait-2.jpg";
-import portrait3 from "@/assets/demo-portrait-3.jpg";
-import portrait4 from "@/assets/demo-portrait-4.jpg";
+import participant1 from "@/assets/participant-01.jpg.asset.json";
+import participant2 from "@/assets/participant-02.jpg.asset.json";
+import participant3 from "@/assets/participant-03.jpg.asset.json";
+import participant4 from "@/assets/participant-04.jpg.asset.json";
+import participant5 from "@/assets/participant-05.jpg.asset.json";
+import participant6 from "@/assets/participant-06.jpg.asset.json";
+import participant7 from "@/assets/participant-07.jpg.asset.json";
+import participant8 from "@/assets/participant-08.jpg.asset.json";
+import participant9 from "@/assets/participant-09.jpg.asset.json";
 
 import type {
   Audition,
@@ -29,7 +34,8 @@ import type {
 } from "@/types";
 
 export const COVERS = [cover1, cover2, cover3, cover4];
-const PORTRAITS = [portrait1, portrait2, portrait3, portrait4];
+// Uploaded sample portraits are shared across the 100 fictional demo entries.
+const PORTRAITS = [participant1, participant2, participant3, participant4, participant5, participant6, participant7, participant8, participant9].map((asset) => asset.url);
 
 const AUDIO = [
   // Locally generated synthetic instrumentals (ffmpeg sine chords, no third-party music).
@@ -94,7 +100,7 @@ export const tracks: Track[] = NAMES.map((name, i) => ({
   title: ["첫 휴가", "야간 근무", "편지", "다시 봄", "복무일지", "네 이름", "새벽 5시", "돌아갈 자리", "먼지", "사이렌", "수요일", "전역일"][i]!,
   artistName: name,
   audioUrl: AUDIO[i % AUDIO.length]!,
-  coverUrl: i < 8 ? PORTRAITS[i % 2 === 0 ? 0 : 2]! : COVERS[i % COVERS.length]!,
+  coverUrl: PORTRAITS[i % PORTRAITS.length]!,
   durationSec: [20, 18, 16][i % 3]!, // matches the local demo file
   lyricsStatus: i === 0 ? "published" : i === 1 ? "review" : "draft",
 }));
@@ -156,7 +162,7 @@ export const entries: Entry[] = NAMES.map((name, i) => ({
   branch: UNITS[i % UNITS.length]!.branch,
   trackId: `t_${i + 1}`,
   interviewVideoUrl: "/video/interview-demo.webm",
-  coverUrl: i < 8 ? PORTRAITS[i % 2 === 0 ? 0 : 2]! : COVERS[i % COVERS.length]!,
+  coverUrl: PORTRAITS[i % PORTRAITS.length]!,
   tagline: TAGLINES[i % TAGLINES.length]!,
   story:
     "입대 전에는 무대에 서는 일이 당연했습니다. 훈련소에서 3주가 지났을 때, 노래가 없는 하루가 얼마나 긴지 알게 됐어요.\n\n생활관 소등 후에 가사를 적었습니다. 처음에는 그냥 버티려고 쓴 글이었는데, 어느 순간 부대 동기들이 먼저 흥얼거리기 시작하더라고요. 이 곡은 그렇게 만들어졌습니다.\n\n지금 이 노래를 듣는 분들이, 각자의 자리에서 버티는 시간을 조금 덜 외롭게 보내면 좋겠습니다.",
