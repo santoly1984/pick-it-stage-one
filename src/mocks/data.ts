@@ -15,6 +15,8 @@ import participant6 from "@/assets/participant-06.jpg.asset.json";
 import participant7 from "@/assets/participant-07.jpg.asset.json";
 import participant8 from "@/assets/participant-08.jpg.asset.json";
 import participant9 from "@/assets/participant-09.jpg.asset.json";
+import participant10 from "@/assets/participant-10.jpg.asset.json";
+import participant11 from "@/assets/participant-11.jpg.asset.json";
 
 import type {
   Audition,
@@ -35,7 +37,7 @@ import type {
 
 export const COVERS = [cover1, cover2, cover3, cover4];
 // Uploaded sample portraits are shared across the 100 fictional demo entries.
-const PORTRAITS = [participant1, participant2, participant3, participant4, participant5, participant6, participant7, participant8, participant9].map((asset) => asset.url);
+const PORTRAITS = [participant1, participant2, participant3, participant4, participant5, participant6, participant7, participant8, participant9, participant10, participant11].map((asset) => asset.url);
 
 const AUDIO = [
   // Locally generated synthetic instrumentals (ffmpeg sine chords, no third-party music).
