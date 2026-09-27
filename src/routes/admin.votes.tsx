@@ -11,6 +11,8 @@ export const Route = createFileRoute("/admin/votes")({
       { name: "description", content: "참가자별 투표 집계 현황을 확인합니다." },
       { property: "og:title", content: "투표 관리 — PICK IT" },
       { property: "og:description", content: "참가자별 투표 집계 현황을 확인합니다." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AdminVotes,

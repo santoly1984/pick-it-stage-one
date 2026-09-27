@@ -20,6 +20,8 @@ export const Route = createFileRoute("/admin/ranking")({
       { name: "description", content: "라운드별 평가 규칙과 결과를 초안·검토·확정·공개 단계로 관리합니다." },
       { property: "og:title", content: "순위 관리 — PICK IT" },
       { property: "og:description", content: "라운드별 평가 규칙과 결과를 초안·검토·확정·공개 단계로 관리합니다." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AdminRanking,

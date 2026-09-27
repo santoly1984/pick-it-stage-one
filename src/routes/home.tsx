@@ -8,7 +8,7 @@ import { useSession } from "@/stores/session";
 import { RankingList } from "@/features/ranking/RankingList";
 import { UpdatedAt } from "@/features/ranking/RankChange";
 import { EntryCard } from "@/features/artist/EntryCard";
-import { DiscGraphic } from "@/components/brand/DiscGraphic";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/home")({
   head: () => ({
@@ -17,6 +17,8 @@ export const Route = createFileRoute("/home")({
       { name: "description", content: "진행 중인 오디션, 실시간 TOP 10, 오늘 들어볼 무대를 한 곳에서." },
       { property: "og:title", content: "홈 — PICK IT" },
       { property: "og:description", content: "진행 중인 오디션, 실시간 TOP 10, 오늘 들어볼 무대를 한 곳에서." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Home,
@@ -40,55 +42,40 @@ function Home() {
 
   return (
     <div className="min-h-screen pb-6">
-      <header className="flex items-center justify-between px-5 pb-2 pt-6">
-        <p className="text-xl font-black tracking-tight">PICK IT</p>
+      <header className="flex items-center justify-between px-5 pb-2 pt-5">
+        <p className="text-xl font-black">PICK IT<span className="text-accent">.</span></p>
         <div className="flex items-center gap-1.5 rounded-full bg-surface px-3 py-1.5 text-xs font-medium">
           <Ticket className="size-3.5 text-primary" />
           투표권 {tickets ?? "-"}장
         </div>
       </header>
 
-      <section className="px-5 pt-4">
-        <h1 className="text-2xl font-bold leading-snug tracking-tight">
-          오늘은 어떤 목소리를
-          <br />
-          골라볼까요?
-        </h1>
+      <section className="px-5 pt-5">
+        <h1 className="text-2xl font-bold leading-snug">오늘은 어떤 목소리를 고를까요?</h1>
+        <p className="mt-1 text-xs text-muted-foreground">음악을 듣고, 마음에 남는 무대를 선택하세요.</p>
       </section>
 
-      {/* Current audition — one program among many */}
       <section className="px-5 pt-5">
-        <div className="panel overflow-hidden">
-          <div className="bg-surface-2 px-5 pt-4">
-            <DiscGraphic className="h-28" />
+        <div className="overflow-hidden rounded-lg bg-surface-2 sm:flex">
+          <div className="flex min-w-0 flex-1 flex-col justify-center p-5">
+            <p className="text-xs font-semibold text-accent">진행 중 · 시즌 1</p>
+            <h2 className="mt-1 text-xl font-bold">군 장병 음악 오디션</h2>
+            <p className="mt-1 text-sm text-muted-foreground">2차 본선 · 100명 데모 투표</p>
+            <Link to="/ranking" className="mt-4 inline-flex h-10 w-fit items-center gap-2 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground">순위와 무대 보기 <ChevronRight className="size-4" /></Link>
           </div>
-          <div className="p-5">
-            <p className="text-xs font-medium text-primary">진행 중인 오디션</p>
-            <p className="mt-1 text-lg font-bold">시즌 1 · 군 장병 음악 오디션</p>
-            <p className="mt-0.5 text-sm text-muted-foreground">2차 라운드 본선 투표 · 10월 15일 마감</p>
-            <Link
-              to="/ranking"
-              className="mt-4 flex h-12 w-full items-center justify-center rounded-xl bg-primary text-sm font-semibold text-primary-foreground"
-            >
-              투표하러 가기
-            </Link>
+          <div className="grid grid-cols-2 gap-2 px-5 pb-5 sm:w-48 sm:shrink-0 sm:p-3">
+            {entries.slice(0, 2).map((entry) => <Link key={entry.id} to="/artist/$id" params={{ id: entry.id }} className="relative aspect-square overflow-hidden rounded-md"><img src={entry.coverUrl} alt={entry.artistName} width={160} height={160} className="size-full object-cover" /></Link>)}
           </div>
         </div>
       </section>
 
-      <section className="px-5 pt-4">
-        <p className="text-xs leading-relaxed text-muted-foreground">
-          PICK IT은 여러 음악 오디션을 담을 수 있도록 설계되었습니다. 이후 프로그램은 확정되지 않았습니다.
-        </p>
-      </section>
-
-      <section className="px-5 pt-7">
+      <section className="px-5 pt-6">
         <div className="flex items-end justify-between gap-3">
           <div className="min-w-0">
-            <h2 className="text-lg font-bold">실시간 TOP 10</h2>
+            <h2 className="text-lg font-bold">실시간 TOP 10 <span className="align-middle text-[11px] font-normal text-muted-foreground">데모 데이터</span></h2>
             {snapshot && <UpdatedAt iso={snapshot.updatedAt} />}
           </div>
-          <Link to="/ranking" className="flex shrink-0 items-center text-sm text-muted-foreground">
+          <Link to="/ranking" search={{ limit: 100 }} className="flex shrink-0 items-center text-sm text-muted-foreground">
             TOP 100 <ChevronRight className="size-4" />
           </Link>
         </div>
@@ -96,15 +83,16 @@ function Home() {
           <>
             <RankingList entries={snapshot.entries.slice(0, expanded ? 10 : 5)} className="mt-3" />
             {snapshot.entries.length > 5 && (
-              <button
+              <Button
                 type="button"
+                variant="secondary"
                 onClick={() => setExpanded((v) => !v)}
                 aria-expanded={expanded}
-                className="mt-2 flex h-11 w-full items-center justify-center gap-1 rounded-xl bg-surface text-sm font-medium text-muted-foreground"
+                className="mt-2 flex h-11 w-full items-center justify-center gap-1 rounded-md text-sm text-muted-foreground"
               >
                 {expanded ? "접기" : "6~10위 펼치기"}
                 <ChevronDown className={`size-4 transition-transform ${expanded ? "rotate-180" : ""}`} />
-              </button>
+              </Button>
             )}
           </>
         ) : (
@@ -112,16 +100,16 @@ function Home() {
         )}
       </section>
 
-      <section className="pt-7">
+      <section className="pt-6">
         <h2 className="px-5 text-lg font-bold">오늘 들어볼 무대</h2>
         <div className="mt-3 flex gap-3 overflow-x-auto px-5 pb-2">
-          {entries.map((entry) => (
+          {entries.slice(0, 8).map((entry) => (
             <EntryCard key={entry.id} entry={entry} queue={queue} />
           ))}
         </div>
       </section>
 
-      <section className="px-5 pt-8">
+      <section className="px-5 pt-6">
         <Link to="/apply" className="panel flex items-center justify-between p-5">
           <div className="min-w-0">
             <p className="text-base font-semibold">오디션 지원 안내</p>

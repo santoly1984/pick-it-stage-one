@@ -10,9 +10,11 @@ export const Route = createFileRoute("/onboarding/role")({
   head: () => ({
     meta: [
       { title: "역할 선택 — PICK IT" },
-      { name: "description", content: "팬, 참가자, 심사위원, 운영자 중 시작할 역할을 선택하세요." },
+       { name: "description", content: "PICK IT에서 팬 또는 참가자로 시작하세요." },
       { property: "og:title", content: "역할 선택 — PICK IT" },
-      { property: "og:description", content: "팬, 참가자, 심사위원, 운영자 중 시작할 역할을 선택하세요." },
+       { property: "og:description", content: "PICK IT에서 팬 또는 참가자로 시작하세요." },
+       { property: "og:type", content: "website" },
+       { name: "twitter:card", content: "summary" },
     ],
   }),
   component: RoleOnboarding,

@@ -9,6 +9,8 @@ export const Route = createFileRoute("/signin")({
       { name: "description", content: "PICK IT에 로그인하고 좋아하는 무대를 발견하고 응원하세요." },
       { property: "og:title", content: "로그인 — PICK IT" },
       { property: "og:description", content: "PICK IT에 로그인하고 좋아하는 무대를 발견하고 응원하세요." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: SignIn,

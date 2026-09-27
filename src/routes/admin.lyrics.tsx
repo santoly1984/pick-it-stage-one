@@ -17,6 +17,8 @@ export const Route = createFileRoute("/admin/lyrics")({
       { name: "description", content: "가사를 입력하고 자동 싱크 결과를 검수한 뒤 공개합니다." },
       { property: "og:title", content: "가사 싱크 — PICK IT" },
       { property: "og:description", content: "가사를 입력하고 자동 싱크 결과를 검수한 뒤 공개합니다." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AdminLyrics,

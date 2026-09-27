@@ -12,6 +12,8 @@ export const Route = createFileRoute("/demo/roles")({
       { name: "robots", content: "noindex" },
       { property: "og:title", content: "데모 역할 전환 — PICK IT" },
       { property: "og:description", content: "개발·QA 검수용 mock 역할 전환 화면." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: DemoRoles,

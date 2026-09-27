@@ -19,6 +19,8 @@ export const Route = createFileRoute("/artist/$id/")({
       { name: "description", content: "참가자의 무대와 이야기를 듣고 투표로 응원하세요." },
       { property: "og:title", content: "참가자 — PICK IT" },
       { property: "og:description", content: "참가자의 무대와 이야기를 듣고 투표로 응원하세요." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: ArtistDetail,

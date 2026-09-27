@@ -9,7 +9,7 @@
  *    scores submitted AND the round has been finalized by an admin.
  */
 import type { RankingService } from "@/services/contracts";
-import { entries, evaluationRules, judgeScores, users, votes } from "@/mocks/data";
+import { entries, evaluationRules, judgeScores, tracks, users, votes } from "@/mocks/data";
 import type {
   AdminRankingEntry,
   EvaluationWeights,
@@ -22,22 +22,24 @@ import type {
 import { assertRole } from "@/stores/session";
 import { delay, nowIso } from "./util";
 
-const previousRanks: Record<string, number> = {
-  e_1: 3, e_2: 1, e_3: 2, e_4: 6, e_5: 4, e_6: 5,
-  e_7: 9, e_8: 7, e_9: 8, e_10: 12, e_11: 10, e_12: 11,
-};
+const previousLiveRanks = new Map<string, Map<string, number>>();
+
+/** Capture the actual previous board immediately before a vote; no invented movement. */
+export function captureLiveRankingBeforeVote(roundId: string) {
+  previousLiveRanks.set(roundId, new Map(computeRanking(roundId, "live-vote").map((row) => [row.entryId, row.rank])));
+}
 
 const JUDGE_COUNT = users.filter((u) => u.roles.includes("judge")).length;
 
 function baseVotes(entryId: string) {
   const n = Number(entryId.split("_")[1] ?? 1);
-  return 48_000 - n * 2_600 + Math.round(Math.abs(Math.sin(n * 2.7)) * 9_000);
+  return Math.max(0, 1_000 - n * 4 + (n * 7) % 3);
 }
 
 function voteCountOf(entryId: string) {
   const cast = votes.filter((v) => v.entryId === entryId).reduce((s, v) => s + v.quantity, 0);
-  // Mock weighting so a few demo votes visibly move the board.
-  return baseVotes(entryId) + cast * 1_500;
+  // Modest mock vote impact, enough to verify movement around TOP10.
+  return baseVotes(entryId) + cast * 5;
 }
 
 function rankChangeOf(rank: number, previousRank: number | null): RankChange {
@@ -81,15 +83,16 @@ export function computeRanking(roundId: string, kind: RankingKind, weights = wei
     return { entry, voteCount, voteScore, judgeScore, technicalScore, convertedScore };
   });
 
-  rows.sort((a, b) => (kind === "live-vote" ? b.voteCount - a.voteCount : b.convertedScore - a.convertedScore));
+  rows.sort((a, b) => (kind === "live-vote" ? b.voteCount - a.voteCount : b.convertedScore - a.convertedScore) || a.entry.id.localeCompare(b.entry.id, "en", { numeric: true }));
   const updatedAt = nowIso();
 
   return rows.map((row, i) => {
     const rank = i + 1;
-    const previousRank = previousRanks[row.entry.id] ?? null;
+    const previousRank = kind === "live-vote" ? (previousLiveRanks.get(roundId)?.get(row.entry.id) ?? rank) : rank;
     return {
       entryId: row.entry.id,
       artistName: row.entry.artistName,
+      trackTitle: tracks.find((t) => t.id === row.entry.trackId)?.title ?? "데모 트랙",
       branch: row.entry.branch,
       coverUrl: row.entry.coverUrl,
       rank,
@@ -117,9 +120,10 @@ export function computeRanking(roundId: string, kind: RankingKind, weights = wei
 
 /** Strips every internal field. The public API must not leak breakdown data. */
 function toPublic(rows: AdminRankingEntry[]): RankingEntry[] {
-  return rows.map(({ entryId, artistName, branch, coverUrl, rank, previousRank, rankChange, updatedAt }) => ({
+  return rows.map(({ entryId, artistName, trackTitle, branch, coverUrl, rank, previousRank, rankChange, updatedAt }) => ({
     entryId,
     artistName,
+    trackTitle,
     branch,
     coverUrl,
     rank,

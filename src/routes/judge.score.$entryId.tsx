@@ -18,6 +18,8 @@ export const Route = createFileRoute("/judge/score/$entryId")({
       { name: "description", content: "참가자의 무대를 확인하고 항목별 점수를 입력하세요." },
       { property: "og:title", content: "평가 입력 — PICK IT" },
       { property: "og:description", content: "참가자의 무대를 확인하고 항목별 점수를 입력하세요." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: JudgeScorePage,

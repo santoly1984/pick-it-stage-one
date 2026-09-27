@@ -11,6 +11,8 @@ export const Route = createFileRoute("/admin/auditions")({
       { name: "description", content: "오디션과 라운드의 일정·상태를 관리합니다." },
       { property: "og:title", content: "오디션 관리 — PICK IT" },
       { property: "og:description", content: "오디션과 라운드의 일정·상태를 관리합니다." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AdminAuditions,

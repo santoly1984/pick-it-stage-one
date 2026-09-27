@@ -11,6 +11,8 @@ export const Route = createFileRoute("/judge/round/$id")({
       { name: "description", content: "라운드에 배정된 참가자 목록과 평가 진행 상태." },
       { property: "og:title", content: "라운드 심사 — PICK IT" },
       { property: "og:description", content: "라운드에 배정된 참가자 목록과 평가 진행 상태." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: JudgeRound,

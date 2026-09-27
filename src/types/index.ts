@@ -200,6 +200,7 @@ export type RankChange = "up" | "down" | "flat" | "new";
 export interface RankingEntry {
   entryId: string;
   artistName: string;
+  trackTitle: string;
   branch: MilitaryBranch;
   coverUrl: string;
   rank: number;

@@ -11,6 +11,8 @@ export const Route = createFileRoute("/artist/$id/story")({
       { name: "description", content: "이 무대가 만들어지기까지의 이야기를 읽어보세요." },
       { property: "og:title", content: "참가자 스토리 — PICK IT" },
       { property: "og:description", content: "이 무대가 만들어지기까지의 이야기를 읽어보세요." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: ArtistStory,

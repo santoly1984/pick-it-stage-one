@@ -11,6 +11,8 @@ export const Route = createFileRoute("/admin/users")({
       { name: "description", content: "계정과 역할 배정을 확인합니다." },
       { property: "og:title", content: "사용자 관리 — PICK IT" },
       { property: "og:description", content: "계정과 역할 배정을 확인합니다." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AdminUsers,

@@ -11,6 +11,8 @@ export const Route = createFileRoute("/judge/")({
       { name: "description", content: "배정된 라운드를 확인하고 평가를 진행하세요." },
       { property: "og:title", content: "심사위원 — PICK IT" },
       { property: "og:description", content: "배정된 라운드를 확인하고 평가를 진행하세요." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: JudgeHome,
